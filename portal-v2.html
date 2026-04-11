@@ -1486,13 +1486,25 @@ document.addEventListener('DOMContentLoaded', initQuickLinks);
 const _origApplyData = applyData;
 applyData = function() { _origApplyData(); initQuickLinks(); };
 
-// localhost を現在のホストに置き換え（スマホ・PC共用対応）+ 死活チェック
+// localhost リンク処理（GitHub Pages では置き換えず即座に無効化）
+const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+             || /^192\.168\.|^10\.|^172\.(1[6-9]|2\d|3[01])\./.test(window.location.hostname);
+
 document.querySelectorAll('a[href*="localhost"]').forEach(a => {
-  a.href = a.href.replace('localhost', window.location.hostname);
+  if (isLocal) {
+    // ローカル環境：同じIPに書き換えて死活チェック対象にする
+    a.href = a.href.replace('localhost', window.location.hostname);
+  } else {
+    // GitHub Pages 等：クリックで無限ロードが起きないようリンクを無効化
+    a.style.opacity = '0.4';
+    a.title = 'PC（ローカル）専用。外部からは利用できません';
+    a.addEventListener('click', e => { e.preventDefault(); });
+  }
 });
 
-// localhostリンク死活チェック（非同期・非ブロック）
+// localhostリンク死活チェック（ローカル環境のみ・非同期・非ブロック）
 function checkLocalLinks() {
+  if (!isLocal) return;
   document.querySelectorAll('a[href*="' + window.location.hostname + '"]').forEach(a => {
     const url = a.getAttribute('href');
     if (!url || url.startsWith('http') === false) return;
