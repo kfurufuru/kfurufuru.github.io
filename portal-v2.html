@@ -902,7 +902,7 @@ let DATA = { ...FALLBACK };
 
 async function loadData() {
   try {
-    const res = await fetch('./portal-data.json?t=' + Date.now());
+    const res = await fetch('./portal-data.json?t=' + Date.now(), { signal: AbortSignal.timeout(5000) });
     if (!res.ok) throw new Error('not ok');
     const j = await res.json();
     // collect_portal_data.py の nested schema → portal flat schema に正規化
