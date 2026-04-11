@@ -961,7 +961,7 @@ async function loadHealthMetrics() {
   const staleWarn = document.getElementById('health-stale-warn');
 
   try {
-    const res = await fetch('./health-monitor/metrics.json?t=' + Date.now());
+    const res = await fetch('./health-monitor/metrics.json?t=' + Date.now(), { signal: AbortSignal.timeout(5000) });
     if (!res.ok) throw new Error('not ok');
     const m = await res.json();
 
