@@ -616,6 +616,86 @@
     </div>
   </div>
 
+  <!-- All Sites Navigation -->
+  <div class="card card-allsites" data-card-id="allsites">
+    <div class="card-label">Navigation Hub</div>
+    <div class="card-title">🗺️ Fカンパニー — 全サイト</div>
+    <div class="allsites-grid">
+
+      <div class="site-group">
+        <div class="site-group-title">⚡ 電験3種 学習</div>
+        <a class="site-link" href="http://localhost:8765/denken-study.html">
+          <span class="site-link-icon">📖</span>今日の学習（朝/昼/夜）
+        </a>
+        <a class="site-link" href="https://kfurufuru.github.io/denken3-study/">
+          <span class="site-link-icon">📊</span>学習ダッシュボード
+        </a>
+        <a class="site-link" href="https://kfurufuru.github.io/denken3-study/quiz.html">
+          <span class="site-link-icon">📝</span>テスト記録
+        </a>
+        <a class="site-link" href="https://kfurufuru.github.io/denken-wiki-riron/" target="_blank">
+          <span class="site-link-icon">📐</span>理論Wiki
+        </a>
+        <a class="site-link" href="https://kfurufuru.github.io/denken-wiki/" target="_blank">
+          <span class="site-link-icon">📚</span>法規Wiki
+        </a>
+        <a class="site-link" href="https://kfurufuru.github.io/denken-wiki-denryoku/" target="_blank">
+          <span class="site-link-icon">⚡</span>電力Wiki
+        </a>
+        <a class="site-link" href="https://github.com/kfurufuru/denken3-study" target="_blank">
+          <span class="site-link-icon">🐙</span>GitHub リポジトリ
+        </a>
+      </div>
+
+      <div class="site-group">
+        <div class="site-group-title">🧠 知識・システム</div>
+        <a class="site-link" href="https://kfurufuru.github.io/genai-db/">
+          <span class="site-link-icon">🤖</span>生成AI データベース
+        </a>
+        <a class="site-link" href="http://localhost:8096/dashboard.html" target="_blank">
+          <span class="site-link-icon">⚡</span>AI Newsダッシュボード
+          <span class="site-link-sub">毎朝7時更新</span>
+        </a>
+        <a class="site-link" href="health-monitor/health-dashboard.html">
+          <span class="site-link-icon">🏥</span>ヘルスダッシュボード
+        </a>
+        <a class="site-link" href="https://kfurufuru.github.io/ei-wiki/" target="_blank">
+          <span class="site-link-icon">🔌</span>電気計装Wiki
+        </a>
+        <a class="site-link" href="session-progress.html">
+          <span class="site-link-icon">📈</span>セッション進捗
+        </a>
+        <a class="site-link" href="reflection/dashboard.html">
+          <span class="site-link-icon">🪞</span>振り返りダッシュボード
+          <span class="site-link-sub">📁 ローカル専用</span>
+        </a>
+      </div>
+
+      <div class="site-group">
+        <div class="site-group-title">👤 デジタルツイン</div>
+        <a class="site-link" href="digital-twin/marriage-dashboard.html">
+          <span class="site-link-icon">💍</span>結婚戦略ダッシュボード
+        </a>
+        <a class="site-link" href="people/portal.html">
+          <span class="site-link-icon">🧑‍💼</span>キャリアポートフォリオ
+        </a>
+        <a class="site-link" href="#" onclick="event.preventDefault();alert('📁 ローカルファイルです\nパス: digital-twin/decision-log.md')">
+          <span class="site-link-icon">📋</span>決定ログ
+          <span class="site-link-sub">📁 ローカル専用</span>
+        </a>
+        <a class="site-link" href="#" onclick="event.preventDefault();alert('📁 ローカルファイルです\nパス: digital-twin/priorities-framework.md')">
+          <span class="site-link-icon">🎯</span>判断軸
+          <span class="site-link-sub">📁 ローカル専用</span>
+        </a>
+        <a class="site-link" href="#" onclick="event.preventDefault();alert('📁 ローカルファイルです\nパス: digital-twin/communication-style.md')">
+          <span class="site-link-icon">✍️</span>文体スタイル
+          <span class="site-link-sub">📁 ローカル専用</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Dynamic Mode Section (Layer 1) -->
   <div class="card card-mode" id="mode-section" data-card-id="mode">
     <!-- Injected by renderMode() -->
@@ -686,9 +766,16 @@
     <div class="card-label">System Health</div>
     <div class="card-title">システム状態</div>
     <div style="margin-top:var(--sp-3);display:flex;flex-direction:column;gap:var(--sp-3);">
+      <!-- 全体ステータスバッジ (metrics.json から動的更新) -->
       <div style="display:flex;align-items:center;gap:var(--sp-3);">
-        <span id="k-health-badge" class="health-badge green">knowledge/ ✓ 正常 (42件)</span>
+        <span id="sys-health-badge" class="health-badge green">✓ 読み込み中...</span>
+        <span id="sys-health-age" style="font-size:0.72rem;color:var(--text3);"></span>
       </div>
+      <!-- カテゴリ別ステータス -->
+      <div id="health-systems-row" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+      <!-- 警告メッセージ -->
+      <div id="health-stale-warn" style="display:none;font-size:0.70rem;color:#fcd34d;"></div>
+      <!-- ファイル件数 -->
       <div style="display:flex;flex-direction:column;gap:6px;">
         <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
           <span style="color:var(--text3);">knowledge/</span>
@@ -779,85 +866,6 @@
     </div>
   </div>
 
-  <!-- All Sites Navigation -->
-  <div class="card card-allsites" data-card-id="allsites">
-    <div class="card-label">Navigation Hub</div>
-    <div class="card-title">🗺️ Fカンパニー — 全サイト</div>
-    <div class="allsites-grid">
-
-      <div class="site-group">
-        <div class="site-group-title">⚡ 電験3種 学習</div>
-        <a class="site-link" href="http://localhost:8765/denken-study.html">
-          <span class="site-link-icon">📖</span>今日の学習（朝/昼/夜）
-        </a>
-        <a class="site-link" href="https://kfurufuru.github.io/denken3-study/">
-          <span class="site-link-icon">📊</span>学習ダッシュボード
-        </a>
-        <a class="site-link" href="https://kfurufuru.github.io/denken3-study/quiz.html">
-          <span class="site-link-icon">📝</span>テスト記録
-        </a>
-        <a class="site-link" href="https://kfurufuru.github.io/denken-wiki-riron/" target="_blank">
-          <span class="site-link-icon">📐</span>理論Wiki
-        </a>
-        <a class="site-link" href="https://kfurufuru.github.io/denken-wiki/" target="_blank">
-          <span class="site-link-icon">📚</span>法規Wiki
-        </a>
-        <a class="site-link" href="https://kfurufuru.github.io/denken-wiki-denryoku/" target="_blank">
-          <span class="site-link-icon">⚡</span>電力Wiki
-        </a>
-        <a class="site-link" href="https://github.com/kfurufuru/denken3-study" target="_blank">
-          <span class="site-link-icon">🐙</span>GitHub リポジトリ
-        </a>
-      </div>
-
-      <div class="site-group">
-        <div class="site-group-title">🧠 知識・システム</div>
-        <a class="site-link" href="https://kfurufuru.github.io/genai-db/">
-          <span class="site-link-icon">🤖</span>生成AI データベース
-        </a>
-        <a class="site-link" href="http://localhost:8096/dashboard.html" target="_blank">
-          <span class="site-link-icon">⚡</span>AI Newsダッシュボード
-          <span class="site-link-sub">毎朝7時更新</span>
-        </a>
-        <a class="site-link" href="health-monitor/health-dashboard.html">
-          <span class="site-link-icon">🏥</span>ヘルスダッシュボード
-        </a>
-        <a class="site-link" href="https://kfurufuru.github.io/ei-wiki/" target="_blank">
-          <span class="site-link-icon">🔌</span>電気計装Wiki
-        </a>
-        <a class="site-link" href="session-progress.html">
-          <span class="site-link-icon">📈</span>セッション進捗
-        </a>
-        <a class="site-link" href="reflection/dashboard.html">
-          <span class="site-link-icon">🪞</span>振り返りダッシュボード
-        </a>
-      </div>
-
-      <div class="site-group">
-        <div class="site-group-title">👤 デジタルツイン</div>
-        <a class="site-link" href="digital-twin/marriage-dashboard.html">
-          <span class="site-link-icon">💍</span>結婚戦略ダッシュボード
-        </a>
-        <a class="site-link" href="people/portal.html">
-          <span class="site-link-icon">🧑‍💼</span>キャリアポートフォリオ
-        </a>
-        <a class="site-link" href="digital-twin/decision-log.md">
-          <span class="site-link-icon">📋</span>決定ログ
-          <span class="site-link-sub">判断記録</span>
-        </a>
-        <a class="site-link" href="digital-twin/priorities-framework.md">
-          <span class="site-link-icon">🎯</span>判断軸
-          <span class="site-link-sub">価値観フレーム</span>
-        </a>
-        <a class="site-link" href="digital-twin/communication-style.md">
-          <span class="site-link-icon">✍️</span>文体スタイル
-          <span class="site-link-sub">コミュニケーション</span>
-        </a>
-      </div>
-
-    </div>
-  </div>
-
 
 </main>
 
@@ -938,6 +946,63 @@ async function loadData() {
     console.warn('[portal] portal-data.json の読み込みに失敗しました:', err);
   }
   applyData();
+  loadHealthMetrics();
+}
+
+async function loadHealthMetrics() {
+  const STATUS_LABEL = { green: '正常', yellow: '注意', red: '異常' };
+  const STATUS_ICON  = { green: '✓', yellow: '⚠', red: '✕' };
+  const STATUS_COLOR = { green: '#6ee7b7', yellow: '#fcd34d', red: '#fca5a5' };
+  const BADGE_CLASS  = { green: 'health-badge green', yellow: 'health-badge yellow', red: 'health-badge red' };
+
+  const sysBadge  = document.getElementById('sys-health-badge');
+  const ageEl     = document.getElementById('sys-health-age');
+  const row       = document.getElementById('health-systems-row');
+  const staleWarn = document.getElementById('health-stale-warn');
+
+  try {
+    const res = await fetch('./health-monitor/metrics.json?t=' + Date.now());
+    if (!res.ok) throw new Error('not ok');
+    const m = await res.json();
+
+    // 全体ステータスバッジ
+    const overall = m.overall_status || 'yellow';
+    if (sysBadge) {
+      sysBadge.className = BADGE_CLASS[overall] || 'health-badge yellow';
+      sysBadge.textContent = `${STATUS_ICON[overall]} システム全体: ${STATUS_LABEL[overall]}`;
+    }
+
+    // カテゴリ別ミニバッジ
+    if (row && m.categories) {
+      row.innerHTML = Object.entries(m.categories).map(([, cat]) => {
+        const s = cat.status || 'yellow';
+        return `<span style="font-size:0.72rem;padding:2px 8px;border-radius:20px;
+          background:${STATUS_COLOR[s]}22;color:${STATUS_COLOR[s]};border:1px solid ${STATUS_COLOR[s]}44;">
+          ${STATUS_ICON[s]} ${cat.label}</span>`;
+      }).join('');
+    }
+
+    // データ鮮度
+    if (m.meta?.collected_at) {
+      const collectedAt = new Date(m.meta.collected_at.replace(' ', 'T'));
+      const ageHours = (Date.now() - collectedAt.getTime()) / 3600000;
+      if (ageEl) ageEl.textContent = `(${Math.round(ageHours)}h前)`;
+      if (staleWarn) {
+        if (ageHours > 24) {
+          staleWarn.style.display = '';
+          staleWarn.textContent = `⚠ データが古い (${Math.round(ageHours)}h前)。ヘルスチェックを実行してください。`;
+        } else {
+          staleWarn.style.display = 'none';
+        }
+      }
+    }
+  } catch(e) {
+    if (sysBadge) {
+      sysBadge.className = 'health-badge yellow';
+      sysBadge.textContent = '⚠ metrics.json 読み込み失敗';
+    }
+    console.warn('[portal] metrics.json 読み込み失敗:', e);
+  }
 }
 
 function applyData() {
@@ -947,8 +1012,6 @@ function applyData() {
   setTxt('k-ideas', DATA.ideas);
   setTxt('k-research', DATA.research);
   setTxt('k-total-chip', DATA.knowledge_total);
-  setTxt('k-health-badge', `✓ 正常 (${DATA.knowledge_total}件)`);
-  document.getElementById('k-health-badge').className = 'health-badge green';
 
   // Health card KPIs
   const hk = document.getElementById('health-k-count');

@@ -1,0 +1,152 @@
+{
+  "version": "1.0",
+  "overall_status": "red",
+  "meta": {
+    "collected_at": "2026-04-01 22:00:20",
+    "sources_checked": 6,
+    "sources_succeeded": 6,
+    "collection_errors": []
+  },
+  "categories": {
+    "wiki": {
+      "label": "Wiki健全性",
+      "status": "yellow",
+      "sources": {
+        "denken-wiki": {
+          "label": "法規Wiki",
+          "status": "yellow",
+          "action_url": "https://github.com/kfurufuru/denken-wiki/actions",
+          "kpi": {
+            "last_commit_days": {
+              "value": null,
+              "status": "yellow",
+              "description": "最終コミット経過日数",
+              "error": "No git log output — repo missing or no commits"
+            },
+            "build_warnings": {
+              "value": "build_failed",
+              "status": "yellow",
+              "description": "mkdocs build警告数",
+              "error": "[Errno 2] No such file or directory: 'C:\\\\Users\\\\kfuru\\\\Projects\\\\denken-wiki'"
+            },
+            "theme_completion": {
+              "value": "unknown",
+              "status": "yellow",
+              "description": "v1.0テーマ割合",
+              "error": "versioning.md not found: C:\\Users\\kfuru\\Projects\\denken-wiki/docs/reference/versioning.md"
+            }
+          }
+        },
+        "denken-wiki-riron": {
+          "label": "理論Wiki",
+          "status": "yellow",
+          "action_url": "https://github.com/kfurufuru/denken-wiki-riron/actions",
+          "kpi": {
+            "last_commit_days": {
+              "value": null,
+              "status": "yellow",
+              "description": "最終コミット経過日数",
+              "error": "No git log output — repo missing or no commits"
+            },
+            "build_warnings": {
+              "value": "build_failed",
+              "status": "yellow",
+              "description": "mkdocs build警告数 (開発中のため閾値緩め)",
+              "error": "[Errno 2] No such file or directory: 'C:\\\\Users\\\\kfuru\\\\Projects\\\\denken-wiki-riron'"
+            },
+            "theme_completion": {
+              "value": "unknown",
+              "status": "yellow",
+              "description": "v0.7以上テーマ割合",
+              "error": "versioning.md not found: C:\\Users\\kfuru\\Projects\\denken-wiki-riron/docs/reference/versioning.md"
+            }
+          }
+        }
+      }
+    },
+    "study": {
+      "label": "学習システム",
+      "status": "red",
+      "sources": {
+        "denken-mailer": {
+          "label": "メーラー",
+          "status": "yellow",
+          "action_url": "file:///C:/Users/kfuru/.secretary/logs/api-cost.json",
+          "kpi": {
+            "records_last_7days": {
+              "value": null,
+              "status": "yellow",
+              "description": "直近7日の記録数",
+              "error": "records.json not found: C:\\Users\\kfuru\\.secretary\\denken3-study-dashboard\\data\\records.json"
+            },
+            "monthly_cost_ratio": {
+              "value": 0,
+              "status": "green",
+              "description": "月額予算消化率",
+              "error": "api-cost.json not found: C:\\Users\\kfuru\\.secretary\\logs\\api-cost.json",
+              "note": "Missing cost log treated as $0 spent"
+            },
+            "daily_calls_today": {
+              "value": 0,
+              "status": "green",
+              "description": "本日API呼出数",
+              "error": "api-cost.json not found: C:\\Users\\kfuru\\.secretary\\logs\\api-cost.json",
+              "note": "Missing cost log treated as 0 calls"
+            }
+          }
+        },
+        "study-dashboard": {
+          "label": "学習ダッシュボード",
+          "status": "red",
+          "action_url": "file:///C:/Users/kfuru/.secretary/denken3-study-dashboard/index.html",
+          "kpi": {
+            "html_exists": {
+              "value": false,
+              "status": "red",
+              "description": "HTML存在確認"
+            }
+          }
+        }
+      }
+    },
+    "gas": {
+      "label": "GASエラー",
+      "status": "yellow",
+      "sources": {
+        "apps-script": {
+          "label": "Google Apps Script",
+          "status": "yellow",
+          "action_url": "https://script.google.com/home",
+          "kpi": {
+            "error_emails_count": {
+              "value": null,
+              "status": "yellow",
+              "description": "過去7日のGASエラー通知メール件数",
+              "note": "gas-errors.json not found — run health-check skill to populate"
+            }
+          }
+        }
+      }
+    },
+    "scheduled": {
+      "label": "Scheduledタスク",
+      "status": "yellow",
+      "sources": {
+        "all_tasks": {
+          "label": "8タスク",
+          "status": "yellow",
+          "action_url": "file:///C:/Users/kfuru/OneDrive/%E3%83%89%E3%82%AD%E3%83%A5%E3%83%A1%E3%83%B3%E3%83%88/Claude/Scheduled",
+          "kpi": {
+            "skill_md_exists": {
+              "value": 0,
+              "status": "yellow",
+              "description": "SKILL.md存在数 (⚠️v1.0暫定指標)",
+              "error": "Scheduled dir not found: C:\\Users\\kfuru\\OneDrive\\ドキュメント\\Claude\\Scheduled"
+            }
+          }
+        }
+      }
+    }
+  },
+  "history": []
+}
