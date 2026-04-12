@@ -747,6 +747,25 @@
     transition:all var(--transition); white-space:nowrap;
   }
   .study-link:hover { background:rgba(34,211,238,0.1); border-color:var(--accent); }
+
+  /* ---- GitHub Pages mode banner ---- */
+  .server-banner.github {
+    background: rgba(34,211,238,0.06);
+    border: 1px solid rgba(34,211,238,0.20);
+    color: #67e8f9;
+  }
+  .server-banner.github .server-banner-btn { display: none; }
+
+  /* ---- Local group dimmed on GitHub Pages ---- */
+  .github-pages-mode .site-group--local {
+    opacity: 0.45;
+  }
+  .github-pages-mode .site-group--local .site-group-title::after {
+    content: ' — ローカル専用';
+    font-weight: 400;
+    color: rgba(245,158,11,0.6);
+    font-size: 0.62rem;
+  }
   </style>
 </head>
 <body>
