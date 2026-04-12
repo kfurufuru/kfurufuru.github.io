@@ -1265,8 +1265,9 @@ async function loadHealthMetrics() {
     }
   } catch(e) {
     if (sysBadge) {
-      sysBadge.className = 'health-badge yellow';
-      sysBadge.textContent = '⚠ metrics.json 読み込み失敗';
+      sysBadge.className = 'health-badge';
+      sysBadge.style.cssText = 'background:rgba(100,116,139,0.10);color:rgba(255,255,255,0.30);border:1px solid rgba(100,116,139,0.18);';
+      sysBadge.textContent = isGitHubPages ? '— ローカル専用' : '— データ未取得';
     }
     console.warn('[portal] metrics.json 読み込み失敗:', e);
   }
