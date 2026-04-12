@@ -1201,10 +1201,10 @@ async function loadData() {
     if (badge) {
       badge.className = 'data-badge offline';
       const isWrongPort = location.port && location.port !== '8092';
-      badge.textContent = isWrongPort ? '🔴 ポート違い' : '🔴 データ未接続';
+      badge.textContent = isWrongPort ? '🔴 ポート違い' : (isGitHubPages ? '🔵 公開モード' : '🔴 データ未接続');
       const reason = isWrongPort
         ? `このページは localhost:8092 で開いてください（現在: ${location.port}）`
-        : `portal-data.json 読み込み失敗 — ${err.message || 'fetch error'}`;
+        : (isGitHubPages ? 'GitHub Pages表示中 — portal-data.json はローカル専用です' : `portal-data.json 読み込み失敗 — ${err.message || 'fetch error'}`);
       badge.setAttribute('data-reason', reason);
       badge.title = '';
     }
