@@ -1591,7 +1591,7 @@ function setServerState(alive) {
   const banner = document.getElementById('server-banner');
   const dot    = document.getElementById('server-dot');
   const msg    = document.getElementById('server-msg');
-  const grid   = document.querySelector('.grid');
+  const grid   = document.querySelector('main');
 
   if (alive) {
     banner.className = 'server-banner on';
@@ -1634,7 +1634,7 @@ setInterval(checkServer, 5000);
 
 // 初期状態: 消灯
 document.addEventListener('DOMContentLoaded', () => {
-  const grid = document.querySelector('.grid');
+  const grid = document.querySelector('main');
   if (grid) grid.classList.add('local-off');
 });
 
