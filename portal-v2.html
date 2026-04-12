@@ -1556,44 +1556,87 @@ document.addEventListener('DOMContentLoaded', initQuickLinks);
 const _origApplyData = applyData;
 applyData = function() { _origApplyData(); initQuickLinks(); };
 
-// ローカルリンク処理 — href="#" + data-local-url 方式（GitHub Pages で誤遷移しない設計）
+// ---- ローカルサーバー検知 & リンク制御 ----
 const isLocal = ['localhost', '127.0.0.1', ''].includes(window.location.hostname)
              || /^192\.168\.|^10\.|^172\.(1[6-9]|2\d|3[01])\./.test(window.location.hostname);
+
+let serverAlive = false;
 
 function openLocalLink(e, a) {
   e.preventDefault();
   const url = a.getAttribute('data-local-url');
   if (!url) return;
-  if (isLocal) {
+  if (serverAlive) {
     window.open(url, '_blank');
   } else {
-    alert('🖥️ PC専用リンクです\nこのリンクはPC上のローカルサーバー起動中のみ使用できます。\n\nURL: ' + url);
+    showServerGuide(e);
   }
 }
 
-// data-local-url を持つリンクのスタイル（非ローカル環境では薄く表示）
-document.querySelectorAll('a[data-local-url]').forEach(a => {
-  if (!isLocal) {
-    a.style.opacity = '0.4';
-    a.title = 'PC（ローカル）専用。外部からは利用できません';
-  }
-});
+function showServerGuide(e) {
+  e.preventDefault();
+  alert(
+    '🖥️ ローカルサーバーの起動方法\n\n' +
+    '① エクスプローラーで以下を開く:\n' +
+    '   C:\\Users\\kfuru\\.secretary\\\n\n' +
+    '② start-server.bat をダブルクリック\n\n' +
+    '③ 黒い画面が出たらサーバー起動完了\n' +
+    '   このページが自動で検知してリンクが点灯します'
+  );
+}
 
-// localhostリンク死活チェック（ローカル環境のみ・非同期・非ブロック）
-function checkLocalLinks() {
-  if (!isLocal) return;
+function setServerState(alive) {
+  if (serverAlive === alive) return;
+  serverAlive = alive;
+  const banner = document.getElementById('server-banner');
+  const dot    = document.getElementById('server-dot');
+  const msg    = document.getElementById('server-msg');
+  const grid   = document.querySelector('.grid');
+
+  if (alive) {
+    banner.className = 'server-banner on';
+    dot.className = 'server-status-dot on';
+    msg.textContent = 'ローカルサーバー稼働中';
+    grid.classList.remove('local-off');
+    grid.classList.add('local-on');
+    // 2秒後にバナーを畳む
+    setTimeout(() => { banner.style.display = 'none'; }, 2000);
+  } else {
+    banner.style.display = '';
+    banner.className = 'server-banner off';
+    dot.className = 'server-status-dot off';
+    msg.textContent = 'ローカルサーバー停止中 — PC専用リンクは使用できません';
+    grid.classList.remove('local-on');
+    grid.classList.add('local-off');
+  }
+
+  // PC専用バッジの表示切替
   document.querySelectorAll('a[data-local-url]').forEach(a => {
-    const url = a.getAttribute('data-local-url');
-    if (!url) return;
-    fetch(url, { method: 'HEAD', mode: 'no-cors', signal: AbortSignal.timeout(3000) })
-      .then(() => { a.style.opacity = ''; a.title = ''; })
-      .catch(() => {
-        a.style.opacity = '0.4';
-        a.title = 'サーバー未起動の可能性があります';
-      });
+    const subs = a.querySelectorAll('.site-link-sub, .link-pin-badge');
+    subs.forEach(s => {
+      s.textContent = alive ? '🟢 稼働中' : '🔒 サーバー停止';
+      s.style.color = alive ? 'var(--green)' : 'var(--red)';
+    });
   });
 }
-setTimeout(checkLocalLinks, 2000);
+
+// ポート別に死活チェック（複数ポート対応）
+function checkServer() {
+  // port 8765 をプローブ（.secretary 用）
+  fetch('http://localhost:8765/', { method: 'HEAD', mode: 'no-cors', signal: AbortSignal.timeout(2000) })
+    .then(() => setServerState(true))
+    .catch(() => setServerState(false));
+}
+
+// 初期チェック＋5秒間隔ポーリング
+setTimeout(checkServer, 500);
+setInterval(checkServer, 5000);
+
+// 初期状態: 消灯
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.querySelector('.grid');
+  if (grid) grid.classList.add('local-off');
+});
 
 // Phase 4 subtask tracking
 function initPhaseTracking() {
