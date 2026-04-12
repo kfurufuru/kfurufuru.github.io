@@ -1620,17 +1620,23 @@ function setServerState(alive) {
   });
 }
 
-// ポート別に死活チェック（複数ポート対応）
+// ポート別に死活チェック
+let checkInterval = 10000; // 停止時は10秒間隔
 function checkServer() {
-  // port 8765 をプローブ（.secretary 用）
   fetch('http://localhost:8765/', { method: 'HEAD', mode: 'no-cors', signal: AbortSignal.timeout(2000) })
-    .then(() => setServerState(true))
-    .catch(() => setServerState(false));
+    .then(() => {
+      setServerState(true);
+      checkInterval = 30000; // 稼働中は30秒間隔（負荷低減）
+    })
+    .catch(() => {
+      setServerState(false);
+      checkInterval = 10000; // 停止中は10秒で再チェック
+    })
+    .finally(() => setTimeout(checkServer, checkInterval));
 }
 
-// 初期チェック＋5秒間隔ポーリング
-setTimeout(checkServer, 500);
-setInterval(checkServer, 5000);
+// 初期チェック（1秒後）
+setTimeout(checkServer, 1000);
 
 // 初期状態: 消灯
 document.addEventListener('DOMContentLoaded', () => {
