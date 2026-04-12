@@ -744,11 +744,13 @@
 
       <div class="site-group">
         <div class="site-group-title">👤 デジタルツイン</div>
-        <a class="site-link" href="digital-twin/marriage-dashboard.html">
+        <a class="site-link" href="#" onclick="event.preventDefault();if(location.hostname==='localhost'||location.hostname==='127.0.0.1'){location.href='digital-twin/marriage-dashboard.html'}else{alert('🔒 ローカル専用ページです\nローカルサーバーからアクセスしてください')}">
           <span class="site-link-icon">💍</span>結婚戦略ダッシュボード
+          <span class="site-link-sub">🔒 ローカル専用</span>
         </a>
-        <a class="site-link" href="people/portal.html">
+        <a class="site-link" href="#" onclick="event.preventDefault();if(location.hostname==='localhost'||location.hostname==='127.0.0.1'){location.href='people/portal.html'}else{alert('🔒 ローカル専用ページです\nローカルサーバーからアクセスしてください')}">
           <span class="site-link-icon">🧑‍💼</span>キャリアポートフォリオ
+          <span class="site-link-sub">🔒 ローカル専用</span>
         </a>
         <a class="site-link" href="#" onclick="event.preventDefault();alert('📁 ローカルファイルです\nパス: digital-twin/decision-log.md')">
           <span class="site-link-icon">📋</span>決定ログ
