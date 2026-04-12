@@ -95,7 +95,27 @@
     }
     .data-badge.offline{
       background:rgba(239,68,68,0.10);border-color:rgba(239,68,68,0.30);color:#fca5a5;
+      cursor:help;
     }
+    .data-badge.offline::after {
+      content: attr(data-reason);
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      background: #1e1b2e;
+      border: 1px solid rgba(239,68,68,0.4);
+      color: #fca5a5;
+      font-size: 0.65rem;
+      font-weight: 400;
+      padding: 6px 10px;
+      border-radius: 8px;
+      white-space: nowrap;
+      z-index: 999;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    }
+    .data-badge.offline:hover::after { display: block; }
+    .header-right { position: relative; }
     .status-dot{
       width:8px;height:8px;border-radius:50%;
       background:var(--red);box-shadow:0 0 8px var(--red);
@@ -145,13 +165,23 @@
       background:linear-gradient(180deg,#6366f1,#a855f7 60%,transparent);
       border-radius:var(--radius-lg) 0 0 var(--radius-lg);
     }
-    .hero-clock{
-      font-size:clamp(2.4rem,4vw,3.4rem);font-weight:200;letter-spacing:-0.03em;
-      font-variant-numeric:tabular-nums;color:rgba(255,255,255,0.88);line-height:1;
-      margin-bottom:4px;
+    .hero-clock{display:none;}/* 旧クロック非表示 */
+    .hero-top-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--sp-3);}
+    .hero-clock-mini{font-size:0.85rem;font-weight:400;font-variant-numeric:tabular-nums;color:rgba(255,255,255,0.28);letter-spacing:.04em;}
+    .hero-meta{display:flex;flex-direction:column;gap:2px;}
+    .hero-greeting{font-size:0.9rem;font-weight:600;color:var(--text2);}
+    .hero-date{font-size:0.72rem;color:var(--text3);}
+    .hero-todo-header{
+      font-size:0.68rem;font-weight:700;letter-spacing:.10em;text-transform:uppercase;
+      color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:8px;
     }
-    .hero-greeting{font-size:1rem;font-weight:500;color:var(--text2);margin-bottom:2px;}
-    .hero-date{font-size:0.75rem;color:var(--text3);margin-bottom:20px;}
+    .hero-todo-count{
+      font-size:0.68rem;padding:1px 7px;border-radius:10px;
+      background:rgba(99,102,241,0.18);color:#a5b4fc;font-weight:700;
+    }
+    .hero-todo-section{flex:1;margin-bottom:var(--sp-4);min-height:0;}
+    .hero-todo-empty{font-size:0.8rem;color:var(--text3);padding:12px 0;text-align:center;}
+    .hero-todo-section .todo-item{font-size:0.8rem;padding:7px 10px;}
     .system-status-row{display:flex;gap:10px;flex-wrap:wrap;}
     .sys-chip{
       display:inline-flex;align-items:center;gap:6px;
@@ -615,11 +645,53 @@
   .health-detail-link:hover { background:rgba(99,102,241,0.18); }
   .card-allsites, .card-phase { content-visibility: auto; contain-intrinsic-size: auto 300px; }
   .phase-progress-wrap { margin-bottom:10px; }
-  .phase-tag[data-subtask] { cursor:pointer; transition:all var(--transition); }
-  .phase-tag[data-subtask]:hover { border-color:rgba(99,102,241,0.45); }
-  .phase-tag.completed {
-    background:rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.30);color:#6ee7b7;
-    text-decoration:line-through;opacity:0.7;
+
+  /* Phase metrics (auto-detect) */
+  .phase-metric-item {
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .phase-metric-item:last-child { border-bottom: none; }
+  .pm-row { display:flex; align-items:center; gap:7px; margin-bottom:3px; }
+  .pm-dot {
+    width:8px; height:8px; border-radius:50%; flex-shrink:0;
+    background: rgba(255,255,255,0.15);
+    transition: background 0.3s;
+  }
+  .pm-dot.done    { background: #10b981; box-shadow: 0 0 5px rgba(16,185,129,0.5); }
+  .pm-dot.progress{ background: #f59e0b; }
+  .pm-dot.none    { background: rgba(255,255,255,0.12); }
+  .pm-label { font-size:0.78rem; color:var(--text2); flex:1; }
+  .pm-auto  {
+    font-size:0.6rem; color:#818cf8;
+    background:rgba(99,102,241,0.12); border:1px solid rgba(99,102,241,0.2);
+    padding:1px 5px; border-radius:3px; flex-shrink:0;
+  }
+  .pm-metric {
+    font-size:0.7rem; color:var(--text3);
+    padding-left:15px; margin-bottom:4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .pm-minibar {
+    height:2px; background:rgba(255,255,255,0.07);
+    border-radius:1px; margin:0 0 2px 15px; overflow:hidden;
+  }
+  .pm-minibar-fill {
+    height:100%;
+    background:linear-gradient(90deg,#6366f1,#a855f7);
+    transition:width 0.5s ease;
+    border-radius:1px;
+  }
+  .pm-minibar-fill.done { background:linear-gradient(90deg,#10b981,#34d399); }
+  .pm-offline {
+    font-size:0.72rem; color:var(--text3);
+    text-align:center; padding:10px 0;
+    border:1px dashed rgba(255,255,255,0.1);
+    border-radius:var(--radius-sm);
+  }
+  .pm-checked-at {
+    font-size:0.62rem; color:var(--text3);
+    margin-top:6px; text-align:right;
   }
 
   /* ── 今日の学習ステータス ── */
@@ -684,6 +756,23 @@
 <div class="orb orb-3"></div>
 <div class="orb-mode" id="orb-mode"></div>
 
+<!-- Wrong-port redirect banner (表示はJSで制御) -->
+<div id="wrong-port-banner" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,14,26,0.97);flex-direction:column;align-items:center;justify-content:center;gap:24px;">
+  <div style="font-size:3rem;">🔀</div>
+  <div style="font-size:1.4rem;font-weight:700;color:#f8fafc;">URLが違います</div>
+  <div style="font-size:0.95rem;color:rgba(255,255,255,0.55);text-align:center;line-height:1.8;">
+    このポータルは <code style="background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:6px;color:#22d3ee;">localhost:8092</code> から開く必要があります。<br>
+    現在のURL <code id="wrong-port-current" style="background:rgba(239,68,68,0.15);padding:2px 8px;border-radius:6px;color:#fca5a5;"></code> では<br>
+    データが正しく読み込めません。
+  </div>
+  <a id="wrong-port-link" href="http://localhost:8092/portal-v2.html"
+     style="margin-top:8px;padding:14px 36px;background:linear-gradient(135deg,#22d3ee,#6366f1);color:#fff;font-weight:700;font-size:1rem;border-radius:14px;text-decoration:none;box-shadow:0 0 24px rgba(34,211,238,0.3);transition:opacity 0.2s;"
+     onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+    ▶ localhost:8092 で開く
+  </a>
+  <div style="font-size:0.72rem;color:rgba(255,255,255,0.25);">ブックマークを上記URLに更新してください</div>
+</div>
+
 <header>
   <span class="logo">⚡ Secretary v2</span>
   <span class="header-meta" id="header-date"></span>
@@ -696,25 +785,6 @@
 </header>
 
 <main>
-
-  <!-- Hero -->
-  <div class="card card-hero" data-card-id="hero">
-    <div class="card-label">Overview</div>
-    <div class="mode-badge morning" id="mode-badge">🌅 朝モード</div>
-    <div class="hero-clock" id="clock">--:--:--</div>
-    <div class="hero-greeting" id="greeting">おはようございます、古舘さん</div>
-    <div class="hero-date" id="hero-date"></div>
-    <div id="hero-focus-task" class="hero-focus-box">
-      <span class="hero-focus-label">🎯 今日のフォーカス</span>
-      <span id="hero-focus-text">オフライン — portal-data.json を確認してください</span>
-    </div>
-    <div class="system-status-row">
-      <span class="sys-chip green"><span class="dot"></span>Wiki 3種 GitHub Pages稼働中</span>
-      <span class="sys-chip green"><span class="dot"></span>学習ダッシュボード 稼働中</span>
-      <span class="sys-chip green"><span class="dot"></span>電験メーラー 5種 稼働中</span>
-      <span class="sys-chip green"><span class="dot"></span>knowledge/ 充実 (<span id="k-total-chip">未取得</span>件)</span>
-    </div>
-  </div>
 
   <!-- Exam Countdown -->
   <div class="card card-exam" data-card-id="denken">
@@ -742,7 +812,7 @@
     <div class="exam-daily-target" id="exam-daily-target">
       <span style="color:#22d3ee;font-weight:700;" id="daily-q-num">--</span> 問/日 のペースで完走できます
     </div>
-    <!-- 今日の学習ステータス（PDCAループ） -->
+    <!-- 今日の学習ステータス -->
     <div class="study-status offline-study" id="study-status">
       <span class="study-status-label">今日の学習</span>
       <div class="study-slots" id="study-slots">
@@ -750,8 +820,35 @@
         <div class="study-slot slot-pending" title="昼">🌤</div>
         <div class="study-slot slot-pending" title="夜">🌙</div>
       </div>
-      <span class="study-progress-text offline-txt" id="study-progress-text">サーバー未接続</span>
+      <span class="study-progress-text offline-txt" id="study-progress-text">未着手</span>
       <a class="study-link" href="#" data-local-url="http://localhost:8765/denken-study.html" onclick="openLocalLink(event,this)">学習を開始</a>
+    </div>
+  </div>
+
+  <!-- Hero (TODO) -->
+  <div class="card card-hero" data-card-id="hero">
+    <div class="card-label">Today's TODO</div>
+    <div class="mode-badge morning" id="mode-badge">🌅 朝モード</div>
+    <div class="hero-top-row">
+      <div class="hero-meta">
+        <div class="hero-greeting" id="greeting">おはようございます、古舘さん</div>
+        <div class="hero-date" id="hero-date"></div>
+      </div>
+      <div class="hero-clock-mini" id="clock">--:--:--</div>
+    </div>
+    <div class="hero-todo-section">
+      <div class="hero-todo-header">
+        📋 未完了タスク
+        <span class="hero-todo-count" id="hero-todo-count">0</span>
+      </div>
+      <div class="todo-list" id="hero-todo-list">
+        <div class="hero-todo-empty">データ読み込み中...</div>
+      </div>
+    </div>
+    <div class="system-status-row">
+      <span class="sys-chip green"><span class="dot"></span>Wiki 3種 稼働中</span>
+      <span class="sys-chip green"><span class="dot"></span>電験メーラー 稼働中</span>
+      <span class="sys-chip green"><span class="dot"></span>knowledge/ <span id="k-total-chip">—</span>件</span>
     </div>
   </div>
 
@@ -811,10 +908,6 @@
 
       <div class="site-group">
         <div class="site-group-title" style="border-bottom-color:rgba(99,102,241,0.3);color:#a5b4fc;">⚡ アプリ</div>
-        <a class="site-link site-link--app" href="#" data-local-url="http://localhost:8765/denken-study.html" onclick="openLocalLink(event,this)">
-          <span class="site-link-icon">📖</span>今日の学習（朝/昼/夜）
-          <span class="site-link-sub">🖥️ PC専用</span>
-        </a>
         <a class="site-link site-link--app" href="https://kfurufuru.github.io/denken3-study/quiz.html">
           <span class="site-link-icon">📝</span>テスト記録
         </a>
@@ -985,13 +1078,10 @@
           <div id="phase-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#6366f1,#a855f7);border-radius:2px;transition:width 0.5s ease;"></div>
         </div>
       </div>
-      <div class="phase-detail-list" id="phase-subtasks">
-        <span class="phase-tag" data-subtask="0">digital-twin 強化</span>
-        <span class="phase-tag" data-subtask="1">decision-log 蓄積・パターン分析</span>
-        <span class="phase-tag" data-subtask="2">furutan-bot 精度向上</span>
-        <span class="phase-tag" data-subtask="3">Wiki HTML生成</span>
-        <span class="phase-tag" data-subtask="4">Notion週次同期自動化</span>
+      <div id="phase-subtasks">
+        <div class="pm-offline">読み込み中...</div>
       </div>
+      <div class="pm-checked-at" id="pm-checked-at"></div>
     </div>
   </div>
 
@@ -1091,8 +1181,13 @@ async function loadData() {
     const badge = document.getElementById('data-badge');
     if (badge) {
       badge.className = 'data-badge offline';
-      badge.textContent = '🔴 オフライン';
-      badge.title = `エラー: ${err.message || 'JSON読み込み失敗'}`;
+      const isWrongPort = location.port && location.port !== '8092';
+      badge.textContent = isWrongPort ? '🔴 ポート違い' : '🔴 データ未接続';
+      const reason = isWrongPort
+        ? `このページは localhost:8092 で開いてください（現在: ${location.port}）`
+        : `portal-data.json 読み込み失敗 — ${err.message || 'fetch error'}`;
+      badge.setAttribute('data-reason', reason);
+      badge.title = '';
     }
     const lastUpd = document.getElementById('last-updated');
     if (lastUpd) lastUpd.textContent = 'フォールバックデータ使用中';
@@ -1209,18 +1304,30 @@ function applyData() {
     }
   }
 
-  // --- ヒーロー フォーカスタスク更新 ---
-  const heroFocusText = document.getElementById('hero-focus-text');
-  if (heroFocusText) {
-    if (DATA.focus_today) {
-      heroFocusText.textContent = DATA.focus_today;
-    } else if (DATA.todos && DATA.todos.length > 0) {
-      const firstOpen = DATA.todos.find(t => !t.done);
-      heroFocusText.textContent = firstOpen
-        ? (firstOpen.text || firstOpen.content || 'タスクを確認してください')
-        : '全タスク完了 🎉';
+  // --- Hero TODO list 描画（未完了・高優先先頭・最大5件）---
+  const heroTodoList = document.getElementById('hero-todo-list');
+  const heroTodoCount = document.getElementById('hero-todo-count');
+  if (heroTodoList) {
+    if (DATA.todos && DATA.todos.length > 0) {
+      const open = DATA.todos.filter(t => !t.done);
+      const sorted = [
+        ...open.filter(t => t.priority === '高'),
+        ...open.filter(t => t.priority !== '高'),
+      ].slice(0, 5);
+      if (heroTodoCount) heroTodoCount.textContent = open.length;
+      if (sorted.length > 0) {
+        heroTodoList.innerHTML = sorted.map(t => `
+          <div class="todo-item ${t.priority === '高' ? 'high' : ''}">
+            <div class="todo-check"></div>
+            <span class="todo-text">${t.text || t.content || ''}</span>
+            <span class="todo-tag ${t.priority === '高' ? 'high' : t.priority === '低' ? 'low' : 'normal'}">${t.priority || '通常'}</span>
+          </div>`).join('');
+      } else {
+        heroTodoList.innerHTML = '<div class="hero-todo-empty">全タスク完了 🎉</div>';
+        if (heroTodoCount) heroTodoCount.textContent = '0';
+      }
     } else {
-      heroFocusText.textContent = 'フォーカス未設定 — portal-data.json を更新してください';
+      heroTodoList.innerHTML = '<div class="hero-todo-empty">portal-data.json を更新してください</div>';
     }
   }
 
@@ -1464,11 +1571,6 @@ function buildModeHTML(mode) {
           <span class="focus-text">${todoItems.length} 件</span>
           <span class="focus-sub">完了: ${completedCount} / 未着手: ${openCount}</span>
         </div>
-        <div class="focus-card" id="morning-study-card" style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(234,179,8,0.06));border-color:rgba(245,158,11,0.25);">
-          <span class="focus-label" style="color:#fcd34d;">📖 今日の学習</span>
-          <span class="focus-text" id="morning-study-text" style="font-size:1.2rem;">確認中...</span>
-          <span class="focus-sub" id="morning-study-sub">denken-server に接続中</span>
-        </div>
       </div>`;
   }
 
@@ -1586,6 +1688,20 @@ function initGreeting() {
 /* =====================================================
    INIT SEQUENCE
    ===================================================== */
+// ---- Wrong-port guard (最優先チェック) ----
+(function() {
+  const port = location.port;
+  if (port && port !== '8092') {
+    const banner = document.getElementById('wrong-port-banner');
+    const cur    = document.getElementById('wrong-port-current');
+    const link   = document.getElementById('wrong-port-link');
+    if (cur) cur.textContent = location.host;
+    // 正しいURLにパスを引き継ぐ
+    if (link) link.href = 'http://localhost:8092' + location.pathname + location.search + location.hash;
+    if (banner) banner.style.display = 'flex';
+  }
+})();
+
 document.addEventListener('DOMContentLoaded', async () => {
   // 1. Render mode UI first (sync)
   renderMode();
@@ -1783,34 +1899,6 @@ function updateStudyStatus(data) {
     if (link) link.textContent = '学習を開始';
   }
 
-  // モードカード内の学習ステータスも更新
-  const morningText = document.getElementById('morning-study-text');
-  const morningSub  = document.getElementById('morning-study-sub');
-  const morningCard = document.getElementById('morning-study-card');
-  if (morningText && morningCard) {
-    if (!data || !data.sessions) {
-      morningText.textContent = '未接続';
-      morningSub.textContent = 'サーバーを起動してください';
-      morningCard.style.background = 'linear-gradient(135deg,rgba(100,116,139,0.1),rgba(100,116,139,0.05))';
-      morningCard.style.borderColor = 'rgba(100,116,139,0.25)';
-    } else if (doneCount === 3) {
-      morningText.textContent = '✅ 完了！';
-      morningText.style.color = '#6ee7b7';
-      morningSub.textContent = '今日の3セッション完了';
-      morningCard.style.background = 'linear-gradient(135deg,rgba(16,185,129,0.14),rgba(5,150,105,0.07))';
-      morningCard.style.borderColor = 'rgba(16,185,129,0.28)';
-    } else if (doneCount > 0) {
-      morningText.textContent = `${doneCount}/3`;
-      morningText.style.color = '#67e8f9';
-      morningSub.textContent = '学習を続けましょう';
-      morningCard.style.background = 'linear-gradient(135deg,rgba(56,189,248,0.12),rgba(34,211,238,0.06))';
-      morningCard.style.borderColor = 'rgba(56,189,248,0.28)';
-    } else {
-      morningText.textContent = '0/3 ⚠';
-      morningText.style.color = '#fcd34d';
-      morningSub.textContent = '今日はまだ学習していません';
-    }
-  }
 }
 
 // ポート別に死活チェック
@@ -1839,34 +1927,53 @@ document.addEventListener('DOMContentLoaded', () => {
   if (grid) grid.classList.add('local-off');
 });
 
-// Phase 4 subtask tracking
-function initPhaseTracking() {
-  const PHASE_KEY = 'phase4_subtasks';
-  const saved = JSON.parse(localStorage.getItem(PHASE_KEY) || '[]');
-  const subtasks = document.querySelectorAll('#phase-subtasks .phase-tag[data-subtask]');
-  const total = subtasks.length;
+// Phase 4 auto-detect metrics
+async function initPhaseTracking() {
+  const container = document.getElementById('phase-subtasks');
+  const bar  = document.getElementById('phase-progress-bar');
+  const text = document.getElementById('phase-progress-text');
+  const ts   = document.getElementById('pm-checked-at');
 
-  function updateProgress() {
-    const completed = document.querySelectorAll('#phase-subtasks .phase-tag.completed').length;
-    const bar = document.getElementById('phase-progress-bar');
-    const text = document.getElementById('phase-progress-text');
-    if (bar) bar.style.width = (completed / total * 100) + '%';
-    if (text) text.textContent = completed + ' / ' + total;
+  function setProgress(done, total) {
+    if (bar)  bar.style.width = (done / total * 100) + '%';
+    if (text) text.textContent = done + ' / ' + total;
   }
 
-  subtasks.forEach((tag, i) => {
-    if (saved[i]) {
-      tag.classList.add('completed');
-    }
-    tag.addEventListener('click', () => {
-      tag.classList.toggle('completed');
-      const state = Array.from(subtasks).map(t => t.classList.contains('completed'));
-      localStorage.setItem(PHASE_KEY, JSON.stringify(state));
-      updateProgress();
-    });
-  });
+  function renderMetrics(data) {
+    container.innerHTML = data.subtasks.map(s => {
+      const pct = Math.min(100, Math.round(s.target > 0 ? (s.value / s.target) * 100 : (s.done ? 100 : 0)));
+      const dotCls = s.done ? 'done' : (pct >= 20 ? 'progress' : 'none');
+      const fillCls = s.done ? 'done' : '';
+      return `<div class="phase-metric-item">
+        <div class="pm-row">
+          <span class="pm-dot ${dotCls}"></span>
+          <span class="pm-label">${s.label}</span>
+          ${s.auto ? '<span class="pm-auto">自動検出</span>' : ''}
+        </div>
+        <div class="pm-metric">${s.metric}</div>
+        <div class="pm-minibar"><div class="pm-minibar-fill ${fillCls}" style="width:${pct}%"></div></div>
+      </div>`;
+    }).join('');
+    setProgress(data.done_count, data.total);
+    if (ts) ts.textContent = `最終確認: ${data.checked_at}`;
+  }
 
-  updateProgress();
+  function renderOffline() {
+    container.innerHTML = '<div class="pm-offline">サーバーオフライン — <code>denken-server.py</code> 起動時に自動更新</div>';
+    setProgress(0, 5);
+    if (ts) ts.textContent = '';
+  }
+
+  try {
+    const resp = await fetch('http://localhost:8765/api/phase-metrics', {
+      signal: AbortSignal.timeout(3000)
+    });
+    if (!resp.ok) throw new Error('error');
+    const data = await resp.json();
+    renderMetrics(data);
+  } catch {
+    renderOffline();
+  }
 }
 document.addEventListener('DOMContentLoaded', initPhaseTracking);
 </script>
