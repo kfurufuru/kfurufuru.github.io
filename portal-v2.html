@@ -1787,6 +1787,7 @@ applyData = function() { _origApplyData(); initQuickLinks(); };
 // ---- ローカルサーバー検知 & リンク制御 ----
 const isLocal = ['localhost', '127.0.0.1', ''].includes(window.location.hostname)
              || /^192\.168\.|^10\.|^172\.(1[6-9]|2\d|3[01])\./.test(window.location.hostname);
+const isGitHubPages = window.location.hostname.includes('github.io');
 
 let serverAlive = false;
 
