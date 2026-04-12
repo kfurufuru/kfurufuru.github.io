@@ -476,6 +476,69 @@
     margin-left: auto;
   }
 
+  /* ---- LOCAL SERVER STATUS ---- */
+  .local-off .site-link[data-local-url],
+  .local-off .link-btn[data-local-url] {
+    opacity: 0.28;
+    pointer-events: none;
+    filter: grayscale(1);
+  }
+  .local-on .site-link[data-local-url],
+  .local-on .link-btn[data-local-url] {
+    opacity: 1;
+    pointer-events: auto;
+    filter: none;
+  }
+  .server-status-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+    transition: background 0.4s ease;
+  }
+  .server-status-dot.off { background: #555; }
+  .server-status-dot.on  { background: var(--green); box-shadow: 0 0 6px var(--green); }
+
+  .server-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    margin-bottom: 12px;
+    border-radius: var(--radius-md);
+    font-size: 0.78rem;
+    transition: all 0.4s ease;
+  }
+  .server-banner.off {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.25);
+    color: #fca5a5;
+  }
+  .server-banner.on {
+    background: rgba(16,185,129,0.08);
+    border: 1px solid rgba(16,185,129,0.25);
+    color: #6ee7b7;
+  }
+  .server-banner-btn {
+    margin-left: auto;
+    padding: 5px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(239,68,68,0.35);
+    background: rgba(239,68,68,0.12);
+    color: #fca5a5;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    text-decoration: none;
+  }
+  .server-banner-btn:hover {
+    background: rgba(239,68,68,0.25);
+    transform: var(--hover-lift);
+  }
+  .server-banner.on .server-banner-btn { display: none; }
+
   /* 認知負荷インジケーター */
   .cognitive-banner {
     grid-column: span 12;
