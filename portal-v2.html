@@ -1830,15 +1830,31 @@ function setServerState(alive) {
     msg.textContent = 'ローカルサーバー稼働中';
     grid.classList.remove('local-off');
     grid.classList.add('local-on');
+    grid.classList.remove('github-pages-mode');
     // 2秒後にバナーを畳む
     setTimeout(() => { banner.style.display = 'none'; }, 2000);
   } else {
     banner.style.display = '';
-    banner.className = 'server-banner off';
-    dot.className = 'server-status-dot off';
-    msg.textContent = 'ローカルサーバー停止中 — PC専用リンクは使用できません';
-    grid.classList.remove('local-on');
-    grid.classList.add('local-off');
+    if (isGitHubPages) {
+      banner.className = 'server-banner github';
+      dot.className = 'server-status-dot off';
+      msg.textContent = '📡 GitHub Pages表示中 — Wiki・公開コンテンツのみ利用可能。ローカル機能はPC起動時に使用できます';
+      grid.classList.remove('local-on', 'local-off');
+      grid.classList.add('github-pages-mode');
+    } else {
+      banner.className = 'server-banner off';
+      dot.className = 'server-status-dot off';
+      msg.textContent = 'ローカルサーバー停止中 — PC専用リンクは使用できません';
+      grid.classList.remove('local-on');
+      grid.classList.add('local-off');
+    }
+  }
+
+  // sys-chip-mailer を動的更新
+  const mailerChip = document.getElementById('sys-chip-mailer');
+  if (mailerChip) {
+    mailerChip.className = `sys-chip ${alive ? 'green' : 'yellow'}`;
+    mailerChip.innerHTML = `<span class="dot"></span>電験メーラー ${alive ? '稼働中' : 'オフライン'}`;
   }
 
   // PC専用バッジの表示切替
