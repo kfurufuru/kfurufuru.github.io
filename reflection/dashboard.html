@@ -3,591 +3,272 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>振り返りダッシュボード</title>
+  <title>電験3種 学習PDCA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
-      --color-bg:     #0f172a;
-      --color-bg2:    #1e293b;
-      --color-accent: #38bdf8;
-      --color-text:   #e2e8f0;
-      --color-muted:  #64748b;
-      --color-border: rgba(255,255,255,0.08);
-      --font-base:    'Inter', 'Noto Sans JP', sans-serif;
-      --fs-body:      0.95rem;
-      --fs-sm:        0.85rem;
-      --lh-body:      1.6;
-      --sp-2: 8px;
-      --sp-3: 12px;
-      --sp-4: 16px;
-      --sp-6: 24px;
-      --sp-8: 32px;
-      --transition:   0.2s ease;
-      --hover-lift:   translateY(-2px);
-      --radius-sm:    6px;
-      --radius-md:    12px;
-      --radius-lg:    20px;
-      --green:  #10b981;
-      --yellow: #f59e0b;
-      --red:    #ef4444;
+      --bg:      #0f172a;
+      --bg2:     #1e293b;
+      --bg3:     #263347;
+      --accent:  #38bdf8;
+      --text:    #e2e8f0;
+      --muted:   #64748b;
+      --border:  rgba(255,255,255,0.08);
+      --green:   #10b981;
+      --yellow:  #f59e0b;
+      --red:     #ef4444;
+      --font:    'Inter','Noto Sans JP',sans-serif;
+      --r-sm:    6px;
+      --r-md:    12px;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 0.95rem; line-height: 1.6; min-height: 100vh; }
 
-    body {
-      background: var(--color-bg);
-      color: var(--color-text);
-      font-family: var(--font-base);
-      font-size: var(--fs-body);
-      line-height: var(--lh-body);
-      min-height: 100vh;
-    }
-
-    a { color: var(--color-accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    /* ── Header ── */
     .header {
-      background: var(--color-bg2);
-      border-bottom: 1px solid var(--color-border);
-      padding: var(--sp-4) var(--sp-8);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: var(--sp-3);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      background: var(--bg2); border-bottom: 1px solid var(--border);
+      padding: 16px 24px; display: flex; align-items: center; gap: 12px;
     }
-    .header-left { display: flex; align-items: center; gap: var(--sp-4); }
-    .portal-link {
-      font-size: var(--fs-sm);
-      color: var(--color-muted);
-      padding: var(--sp-2) var(--sp-3);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      transition: all var(--transition);
-    }
-    .portal-link:hover {
-      color: var(--color-accent);
-      border-color: var(--color-accent);
-      text-decoration: none;
-      transform: var(--hover-lift);
-    }
-    .header-title { font-size: 1.15rem; font-weight: 700; letter-spacing: 0.02em; }
-    .header-meta { font-size: var(--fs-sm); color: var(--color-muted); }
+    .header h1 { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+    .header-sub { font-size: 0.8rem; color: var(--muted); margin-left: auto; }
 
-    /* ── Main layout ── */
-    .main { max-width: 1100px; margin: 0 auto; padding: var(--sp-8) var(--sp-6); }
+    .main { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
 
-    /* ── Summary bar ── */
-    .summary-bar {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--sp-4);
-      margin-bottom: var(--sp-8);
-    }
-    .summary-card {
-      background: var(--color-bg2);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      padding: var(--sp-6);
-      transition: transform var(--transition), box-shadow var(--transition);
-    }
-    .summary-card:hover {
-      transform: var(--hover-lift);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    }
-    .summary-label {
-      font-size: var(--fs-sm);
-      color: var(--color-muted);
-      margin-bottom: var(--sp-2);
-      font-weight: 500;
-    }
-    .summary-value {
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: var(--color-accent);
-      line-height: 1.1;
-    }
-    .summary-unit { font-size: 0.9rem; font-weight: 500; color: var(--color-muted); margin-left: 4px; }
-    .summary-sub { font-size: var(--fs-sm); color: var(--color-muted); margin-top: var(--sp-2); }
-    .progress-track {
-      height: 6px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 999px;
-      margin-top: var(--sp-3);
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      border-radius: 999px;
-      transition: width 0.5s ease;
-    }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+    .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r-md); padding: 16px 20px; }
+    .stat-label { font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; }
+    .stat-value { font-size: 2rem; font-weight: 700; line-height: 1; }
+    .stat-value.green  { color: var(--green); }
+    .stat-value.yellow { color: var(--yellow); }
+    .stat-value.red    { color: var(--red); }
+    .stat-value.accent { color: var(--accent); }
+    .stat-sub { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
 
-    /* ── Section ── */
-    .section {
-      background: var(--color-bg2);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      padding: var(--sp-6);
-      margin-bottom: var(--sp-6);
-    }
-    .section-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--color-text);
-      margin-bottom: var(--sp-6);
-      display: flex;
-      align-items: center;
-      gap: var(--sp-2);
-    }
-    .icon-wrap { display: flex; align-items: center; color: var(--color-accent); }
-    .icon-wrap svg { width: 18px; height: 18px; }
-    .muted { color: var(--color-muted); font-size: var(--fs-sm); }
+    .charts { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r-md); padding: 20px; }
+    .card-title { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
 
-    /* ── Heatmap ── */
-    .heatmap-wrap {
-      display: flex;
-      gap: var(--sp-3);
-      overflow-x: auto;
-      padding-bottom: var(--sp-2);
-    }
-    .hm-day-labels {
-      display: grid;
-      grid-template-rows: repeat(7, 14px);
-      gap: 3px;
-      padding-top: 22px;
-      flex-shrink: 0;
-    }
-    .hm-day-label {
-      font-size: 11px;
-      color: var(--color-muted);
-      height: 14px;
-      display: flex;
-      align-items: center;
-    }
-    .hm-grid-area { flex: 1; min-width: 0; }
-    .hm-week-labels {
-      display: flex;
-      gap: 3px;
-      margin-bottom: 4px;
-      height: 18px;
-    }
-    .hm-week-label {
-      font-size: 10px;
-      color: var(--color-muted);
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: clip;
-    }
-    .hm-grid {
-      display: grid;
-      grid-template-rows: repeat(7, 14px);
-      grid-auto-flow: column;
-      gap: 3px;
-    }
-    .hm-cell {
-      width: 100%;
-      height: 14px;
-      border-radius: 2px;
-      background: rgba(255,255,255,0.06);
-      cursor: default;
-      transition: opacity var(--transition);
-    }
-    .hm-cell:hover { opacity: 0.8; }
-    .hm-filled { background: rgba(56,189,248,0.5); }
-    .hm-today { outline: 2px solid var(--color-accent); outline-offset: 1px; }
-    .hm-out { background: transparent; }
-    .hm-legend {
-      display: flex;
-      align-items: center;
-      gap: var(--sp-2);
-      margin-top: var(--sp-4);
-      justify-content: flex-end;
-    }
-    .hm-legend-label { font-size: 11px; color: var(--color-muted); }
-    .hm-legend-cells { display: flex; gap: 3px; }
+    .subject-bars { display: flex; flex-direction: column; gap: 14px; }
+    .subject-header { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 0.85rem; }
+    .subject-name { font-weight: 500; }
+    .subject-count { color: var(--muted); font-size: 0.8rem; }
+    .bar-track { background: var(--bg3); border-radius: 4px; height: 8px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
 
-    /* ── KPT ── */
-    .kpt-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--sp-4);
-    }
-    .kpt-col {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      padding: var(--sp-4);
-    }
-    .kpt-keep    { border-top: 3px solid var(--green); }
-    .kpt-problem { border-top: 3px solid var(--yellow); }
-    .kpt-try     { border-top: 3px solid var(--color-accent); }
-    .kpt-header {
-      font-weight: 600;
-      font-size: var(--fs-sm);
-      margin-bottom: var(--sp-3);
-      display: flex;
-      align-items: center;
-      gap: var(--sp-2);
-    }
-    .kpt-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .kpt-item {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      padding: var(--sp-2) 0;
-      border-bottom: 1px solid var(--color-border);
-      font-size: var(--fs-sm);
-      line-height: 1.5;
-    }
-    .kpt-item:last-child { border-bottom: none; }
-    .kpt-date { font-size: 10px; color: var(--color-muted); font-weight: 500; }
-    .kpt-empty { font-size: var(--fs-sm); color: var(--color-muted); padding: var(--sp-2) 0; }
+    .alert-section { margin-bottom: 24px; }
+    .alert-title { font-size: 0.85rem; font-weight: 600; color: var(--yellow); margin-bottom: 10px; }
+    .alert-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .alert-chip { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); border-radius: var(--r-sm); padding: 4px 12px; font-size: 0.82rem; color: var(--yellow); }
+    .alert-chip.ng { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); color: var(--red); }
 
-    /* ── Timeline ── */
-    .timeline { display: flex; flex-direction: column; gap: 0; }
-    .tl-item {
-      display: grid;
-      grid-template-columns: 60px 24px 1fr;
-      gap: var(--sp-3);
-      align-items: start;
-    }
-    .tl-left {
-      text-align: right;
-      padding-top: 2px;
-    }
-    .tl-date { font-size: var(--fs-sm); font-weight: 600; color: var(--color-accent); }
-    .tl-type-badge {
-      display: inline-block;
-      font-size: 10px;
-      color: var(--color-muted);
-      background: rgba(255,255,255,0.05);
-      border-radius: 3px;
-      padding: 1px 4px;
-      margin-top: 2px;
-    }
-    .tl-connector {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 4px;
-    }
-    .tl-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--color-accent);
-      flex-shrink: 0;
-      box-shadow: 0 0 6px rgba(56,189,248,0.5);
-    }
-    .tl-line {
-      width: 2px;
-      flex: 1;
-      min-height: 24px;
-      background: var(--color-border);
-      margin-top: 4px;
-    }
-    .tl-item:last-child .tl-line { display: none; }
-    .tl-content {
-      font-size: var(--fs-sm);
-      color: var(--color-text);
-      padding: var(--sp-2) var(--sp-3);
-      background: rgba(56,189,248,0.05);
-      border-radius: var(--radius-sm);
-      border-left: 2px solid rgba(56,189,248,0.3);
-      margin-bottom: var(--sp-3);
-      line-height: 1.55;
-    }
+    .filter-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .filter-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--muted); font-size: 0.82rem; padding: 5px 14px; border-radius: 20px; cursor: pointer; transition: 0.2s; font-family: var(--font); }
+    .filter-btn:hover, .filter-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
 
-    /* ── Chart ── */
-    .chart-wrap {
-      height: 220px;
-      position: relative;
-    }
+    .pdca-list { display: flex; flex-direction: column; gap: 10px; }
+    .pdca-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 14px 16px; }
+    .pdca-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+    .badge { font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .badge-ok    { background: rgba(16,185,129,0.15);  color: var(--green);  border: 1px solid rgba(16,185,129,0.3); }
+    .badge-risky { background: rgba(245,158,11,0.15);  color: var(--yellow); border: 1px solid rgba(245,158,11,0.3); }
+    .badge-ng    { background: rgba(239,68,68,0.15);   color: var(--red);    border: 1px solid rgba(239,68,68,0.3); }
+    .badge-subj  { background: rgba(56,189,248,0.1);   color: var(--accent); border: 1px solid rgba(56,189,248,0.2); }
+    .pdca-theme { font-weight: 600; }
+    .pdca-date  { font-size: 0.78rem; color: var(--muted); margin-left: auto; }
+    .pdca-section { margin-top: 6px; }
+    .pdca-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+    .pdca-label.problem { color: var(--red); }
+    .pdca-label.patch   { color: var(--green); }
+    .pdca-text  { font-size: 0.85rem; color: #cbd5e1; line-height: 1.5; }
 
-    /* ── Responsive ── */
+    .loading { text-align: center; padding: 80px 20px; color: var(--muted); }
+    .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     @media (max-width: 768px) {
-      .main { padding: var(--sp-4); }
-      .header { padding: var(--sp-4); }
-      .summary-bar { grid-template-columns: 1fr; }
-      .kpt-grid { grid-template-columns: 1fr; }
-      .tl-item { grid-template-columns: 50px 20px 1fr; gap: var(--sp-2); }
-      .hm-cell { height: 12px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .charts { grid-template-columns: 1fr; }
     }
     @media (max-width: 480px) {
-      .header-title { font-size: 1rem; }
-      .summary-value { font-size: 1.8rem; }
-      .section { padding: var(--sp-4); }
-      .tl-item { grid-template-columns: 44px 16px 1fr; }
+      .main { padding: 16px 12px; }
     }
   </style>
 </head>
 <body>
 
-<header class="header">
-  <div class="header-left">
-    <a class="portal-link" href="../portal-v2.html">← ポータル</a>
-    <div class="header-title">振り返りダッシュボード</div>
-  </div>
-  <div class="header-meta">最終更新: 2026-04-10 18:00</div>
-</header>
+<div class="header">
+  <span>⚡</span>
+  <h1>電験3種 学習PDCA</h1>
+  <span class="header-sub" id="updated-at">読み込み中…</span>
+</div>
 
-<main class="main">
+<div class="main" id="app">
+  <div class="loading"><div class="spinner"></div>データ取得中…</div>
+</div>
 
-  
-    <div class="summary-bar">
-      <div class="summary-card">
-        <div class="summary-label">今週の振り返り率</div>
-        <div class="summary-value">80<span class="summary-unit">%</span></div>
-        <div class="summary-sub">4 / 5 営業日</div>
-        <div class="progress-track">
-          <div class="progress-fill" style="width:80%; background:var(--green);"></div>
-        </div>
+<script>
+const DATA_URL = 'https://raw.githubusercontent.com/kfurufuru/denken3-study/main/data/records.json';
+const SUBJ_COLOR = { '理論': '#38bdf8', '電力': '#10b981', '機械': '#a78bfa', '法規': '#f59e0b' };
+
+async function load() {
+  const res = await fetch(DATA_URL);
+  if (!res.ok) throw new Error('fetch failed: ' + res.status);
+  return res.json();
+}
+
+function resultLabel(r) { return r === 'ok' ? 'OK' : r === 'risky' ? 'RISKY' : 'NG'; }
+
+function render(records) {
+  // Latest per theme for stats
+  const latestMap = {};
+  records.forEach(r => {
+    if (!latestMap[r.theme_id] || r.date > latestMap[r.theme_id].date) latestMap[r.theme_id] = r;
+  });
+  const latest = Object.values(latestMap);
+
+  const total  = latest.length;
+  const okCnt  = latest.filter(r => r.result === 'ok').length;
+  const risky  = latest.filter(r => r.result === 'risky');
+  const ng     = latest.filter(r => r.result === 'ng');
+  const okRate = total ? Math.round(okCnt / total * 100) : 0;
+
+  const subjMap = {};
+  latest.forEach(r => { const s = r.subject || '不明'; subjMap[s] = (subjMap[s] || 0) + 1; });
+  const maxSubj = Math.max(...Object.values(subjMap), 1);
+
+  const timeMap = {};
+  records.forEach(r => { timeMap[r.date] = (timeMap[r.date] || 0) + 1; });
+  const dates = Object.keys(timeMap).sort();
+  const lastDate = dates[dates.length - 1] || '–';
+
+  const hasPDCA = records
+    .filter(r => r.memo || r.patch)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 20);
+
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">学習テーマ数</div>
+        <div class="stat-value accent">${total}</div>
+        <div class="stat-sub">ユニーク</div>
       </div>
-      <div class="summary-card">
-        <div class="summary-label">平均タスク完了数</div>
-        <div class="summary-value">6.5<span class="summary-unit">件/日</span></div>
-        <div class="summary-sub">今週の平均</div>
+      <div class="stat-card">
+        <div class="stat-label">OK 率</div>
+        <div class="stat-value green">${okRate}%</div>
+        <div class="stat-sub">${okCnt} / ${total}</div>
       </div>
-      <div class="summary-card">
-        <div class="summary-label">継続日数</div>
-        <div class="summary-value">4<span class="summary-unit">日</span></div>
-        <div class="summary-sub">連続記録中</div>
+      <div class="stat-card">
+        <div class="stat-label">要復習 RISKY</div>
+        <div class="stat-value yellow">${risky.length}</div>
+        <div class="stat-sub">SR対象</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">NG</div>
+        <div class="stat-value red">${ng.length}</div>
+        <div class="stat-sub">再学習</div>
       </div>
     </div>
 
-  
-    <section class="section">
-      <h2 class="section-title"><span class="icon-wrap" data-lucide="calendar-days"></span>継続カレンダー</h2>
-      <div class="heatmap-wrap">
-        <div class="hm-day-labels"><div class="hm-day-label">月</div><div class="hm-day-label">火</div><div class="hm-day-label">水</div><div class="hm-day-label">木</div><div class="hm-day-label">金</div><div class="hm-day-label">土</div><div class="hm-day-label">日</div></div>
-        <div class="hm-grid-area">
-          <div class="hm-week-labels"><div class="hm-week-label">01/12</div><div class="hm-week-label">01/19</div><div class="hm-week-label">01/26</div><div class="hm-week-label">02/02</div><div class="hm-week-label">02/09</div><div class="hm-week-label">02/16</div><div class="hm-week-label">02/23</div><div class="hm-week-label">03/02</div><div class="hm-week-label">03/09</div><div class="hm-week-label">03/16</div><div class="hm-week-label">03/23</div><div class="hm-week-label">03/30</div><div class="hm-week-label">04/06</div></div>
-          <div class="hm-grid" style="grid-template-columns: repeat(13, 1fr);">
-            <div class="hm-cell hm-out"></div><div class="hm-cell" title="2026-01-19"></div><div class="hm-cell" title="2026-01-26"></div><div class="hm-cell" title="2026-02-02"></div><div class="hm-cell" title="2026-02-09"></div><div class="hm-cell" title="2026-02-16"></div><div class="hm-cell" title="2026-02-23"></div><div class="hm-cell" title="2026-03-02"></div><div class="hm-cell" title="2026-03-09"></div><div class="hm-cell" title="2026-03-16"></div><div class="hm-cell" title="2026-03-23"></div><div class="hm-cell" title="2026-03-30"></div><div class="hm-cell" title="2026-04-06"></div><div class="hm-cell hm-out"></div><div class="hm-cell" title="2026-01-20"></div><div class="hm-cell" title="2026-01-27"></div><div class="hm-cell" title="2026-02-03"></div><div class="hm-cell" title="2026-02-10"></div><div class="hm-cell" title="2026-02-17"></div><div class="hm-cell" title="2026-02-24"></div><div class="hm-cell" title="2026-03-03"></div><div class="hm-cell" title="2026-03-10"></div><div class="hm-cell" title="2026-03-17"></div><div class="hm-cell" title="2026-03-24"></div><div class="hm-cell hm-filled" style="background:rgba(56, 189, 248, 0.74);" title="2026-03-31: 5件"></div><div class="hm-cell hm-filled" style="background:rgba(56, 189, 248, 0.74);" title="2026-04-07: 5件"></div><div class="hm-cell hm-out"></div><div class="hm-cell" title="2026-01-21"></div><div class="hm-cell" title="2026-01-28"></div><div class="hm-cell" title="2026-02-04"></div><div class="hm-cell" title="2026-02-11"></div><div class="hm-cell" title="2026-02-18"></div><div class="hm-cell" title="2026-02-25"></div><div class="hm-cell" title="2026-03-04"></div><div class="hm-cell" title="2026-03-11"></div><div class="hm-cell" title="2026-03-18"></div><div class="hm-cell" title="2026-03-25"></div><div class="hm-cell hm-filled" style="background:rgba(56, 189, 248, 0.82);" title="2026-04-01: 6件"></div><div class="hm-cell hm-filled" style="background:rgba(56, 189, 248, 1.00);" title="2026-04-08: 8件"></div><div class="hm-cell hm-out"></div><div class="hm-cell" title="2026-01-22"></div><div class="hm-cell" title="2026-01-29"></div><div class="hm-cell" title="2026-02-05"></div><div class="hm-cell" title="2026-02-12"></div><div class="hm-cell" title="2026-02-19"></div><div class="hm-cell" title="2026-02-26"></div><div class="hm-cell" title="2026-03-05"></div><div class="hm-cell" title="2026-03-12"></div><div class="hm-cell" title="2026-03-19"></div><div class="hm-cell" title="2026-03-26"></div><div class="hm-cell hm-filled" style="background:rgba(56, 189, 248, 0.74);" title="2026-04-02: 5件"></div><div class="hm-cell hm-filled" style="background:rgba(56, 189, 248, 0.82);" title="2026-04-09: 6件"></div><div class="hm-cell hm-out"></div><div class="hm-cell" title="2026-01-23"></div><div class="hm-cell" title="2026-01-30"></div><div class="hm-cell" title="2026-02-06"></div><div class="hm-cell" title="2026-02-13"></div><div class="hm-cell" title="2026-02-20"></div><div class="hm-cell" title="2026-02-27"></div><div class="hm-cell" title="2026-03-06"></div><div class="hm-cell" title="2026-03-13"></div><div class="hm-cell" title="2026-03-20"></div><div class="hm-cell" title="2026-03-27"></div><div class="hm-cell hm-filled" style="background:rgba(56, 189, 248, 0.91);" title="2026-04-03: 7件"></div><div class="hm-cell hm-filled hm-today" style="background:rgba(56, 189, 248, 0.91);" title="2026-04-10: 7件"></div><div class="hm-cell" title="2026-01-17"></div><div class="hm-cell" title="2026-01-24"></div><div class="hm-cell" title="2026-01-31"></div><div class="hm-cell" title="2026-02-07"></div><div class="hm-cell" title="2026-02-14"></div><div class="hm-cell" title="2026-02-21"></div><div class="hm-cell" title="2026-02-28"></div><div class="hm-cell" title="2026-03-07"></div><div class="hm-cell" title="2026-03-14"></div><div class="hm-cell" title="2026-03-21"></div><div class="hm-cell" title="2026-03-28"></div><div class="hm-cell hm-filled" style="background:rgba(56, 189, 248, 0.65);" title="2026-04-04: 4件"></div><div class="hm-cell hm-out"></div><div class="hm-cell" title="2026-01-18"></div><div class="hm-cell" title="2026-01-25"></div><div class="hm-cell" title="2026-02-01"></div><div class="hm-cell" title="2026-02-08"></div><div class="hm-cell" title="2026-02-15"></div><div class="hm-cell" title="2026-02-22"></div><div class="hm-cell" title="2026-03-01"></div><div class="hm-cell" title="2026-03-08"></div><div class="hm-cell" title="2026-03-15"></div><div class="hm-cell" title="2026-03-22"></div><div class="hm-cell" title="2026-03-29"></div><div class="hm-cell" title="2026-04-05"></div><div class="hm-cell hm-out"></div>
-          </div>
-        </div>
+    <div class="charts">
+      <div class="card">
+        <div class="card-title">学習アクティビティ（日別）</div>
+        <canvas id="chart-timeline" height="110"></canvas>
       </div>
-      <div class="hm-legend">
-        <span class="hm-legend-label">少ない</span>
-        <div class="hm-legend-cells">
-          <div class="hm-cell" style="background:var(--color-bg2);"></div>
-          <div class="hm-cell" style="background:rgba(56,189,248,0.3);"></div>
-          <div class="hm-cell" style="background:rgba(56,189,248,0.55);"></div>
-          <div class="hm-cell" style="background:rgba(56,189,248,0.75);"></div>
-          <div class="hm-cell" style="background:rgba(56,189,248,1.0);"></div>
-        </div>
-        <span class="hm-legend-label">多い</span>
+      <div class="card">
+        <div class="card-title">科目別カバレッジ</div>
+        <div class="subject-bars" id="subj-bars"></div>
       </div>
-    </section>
+    </div>
 
-  
-    <section class="section">
-      <h2 class="section-title"><span class="icon-wrap" data-lucide="layers"></span>週次 KPT サマリー</h2>
-      <div class="kpt-grid">
-        <div class="kpt-col kpt-keep">
-          <div class="kpt-header"><span class="kpt-dot" style="background:var(--green);"></span>Keep</div>
-          <div class="kpt-item"><span class="kpt-date">04/10</span><span>役員報告は結論を1枚目に置き、根拠は別スライドに飛ばす構成。質問が的絞りやすくなる</span></div><div class="kpt-item"><span class="kpt-date">04/09</span><span>チームMTGは課題のみ共有し、進捗は事前にドキュメントで確認する形式が時間効率が良い</span></div><div class="kpt-item"><span class="kpt-date">04/08</span><span>障害対応時はまず電源品質とアース状態を確認する手順が有効。今日もUPS電圧異常が原因だった</span></div><div class="kpt-item"><span class="kpt-date">04/07</span><span>電験の演習は朝の通勤時間に集中してやる習慣が定着してきた</span></div>
-        </div>
-        <div class="kpt-col kpt-problem">
-          <div class="kpt-header"><span class="kpt-dot" style="background:var(--yellow);"></span>Problem</div>
-          <div class="kpt-item"><span class="kpt-date">04/10</span><span>技術面接のサポート中、評価基準が面接官間で統一されていないことに気づいた</span></div><div class="kpt-item"><span class="kpt-date">04/09</span><span>変圧器の等価回路（T形回路）の励磁回路の扱いが曖昧。一次換算・二次換算の変換が混乱しやすい</span></div><div class="kpt-item"><span class="kpt-date">04/08</span><span>稟議への追加根拠の収集に予想外に時間がかかった（ベンダーへの確認往復）</span></div><div class="kpt-item"><span class="kpt-date">04/07</span><span>コンデンサの過渡応答問題でRC時定数の扱いが不正確だった。公式の意味を再確認が必要</span></div>
-        </div>
-        <div class="kpt-col kpt-try">
-          <div class="kpt-header"><span class="kpt-dot" style="background:var(--color-accent);"></span>Try</div>
-          <div class="kpt-item"><span class="kpt-date">04/10</span><span>次回採用から電気計装の技術評価チェックリストを作成して面接に持ち込む</span></div><div class="kpt-item"><span class="kpt-date">04/09</span><span>変圧器等価回路の図を書きながら一次換算の手順を整理してknowledgeに保存する</span></div><div class="kpt-item"><span class="kpt-date">04/08</span><span>仕様検討段階でROI関連のデータを先に集めておく。後から追加する手間を省く</span></div><div class="kpt-item"><span class="kpt-date">04/07</span><span>フェインマンセッションでRC時定数を自分の言葉で説明し直す</span></div>
-        </div>
+    ${(risky.length + ng.length) > 0 ? `
+    <div class="alert-section">
+      <div class="alert-title">⚠️ 要フォロー</div>
+      <div class="alert-list">
+        ${ng.map(r => `<div class="alert-chip ng">NG: ${r.theme}</div>`).join('')}
+        ${risky.map(r => `<div class="alert-chip">RISKY: ${r.theme}</div>`).join('')}
       </div>
-    </section>
+    </div>` : ''}
 
-  
-    <section class="section">
-      <h2 class="section-title"><span class="icon-wrap" data-lucide="lightbulb"></span>学びタイムライン</h2>
-      <div class="timeline">
-        
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-date">04/10</div>
-            <span class="tl-type-badge">デイリー</span>
-          </div>
-          <div class="tl-connector">
-            <div class="tl-dot"></div>
-            <div class="tl-line"></div>
-          </div>
-          <div class="tl-content">RL回路の過渡応答はRC回路と対称。時定数τ=L/R。エネルギーをコイルが蓄えるため電流変化が遅れる点がRC（電圧変化が遅れる）との違い</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-date">04/09</div>
-            <span class="tl-type-badge">デイリー</span>
-          </div>
-          <div class="tl-connector">
-            <div class="tl-dot"></div>
-            <div class="tl-line"></div>
-          </div>
-          <div class="tl-content">変圧器の百分率インピーダンス（%Z）は短絡事故電流の計算に直結。%Zが大きいほど短絡電流は小さくなる（保護協調設計に重要）</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-date">04/08</div>
-            <span class="tl-type-badge">デイリー</span>
-          </div>
-          <div class="tl-connector">
-            <div class="tl-dot"></div>
-            <div class="tl-line"></div>
-          </div>
-          <div class="tl-content">SCADA通信エラーの原因切り分けは物理層（ケーブル・コネクタ）→ネットワーク層→アプリ層の順に確認するのが効率的</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-date">04/07</div>
-            <span class="tl-type-badge">デイリー</span>
-          </div>
-          <div class="tl-connector">
-            <div class="tl-dot"></div>
-            <div class="tl-line"></div>
-          </div>
-          <div class="tl-content">RC回路の時定数τ=RCは「電圧が初期値の約63%まで変化する時間」。充電・放電で同じ式が使えるが符号と初期条件の設定に注意</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-date">04/05</div>
-            <span class="tl-type-badge">ウィークリー</span>
-          </div>
-          <div class="tl-connector">
-            <div class="tl-dot"></div>
-            <div class="tl-line"></div>
-          </div>
-          <div class="tl-content">電力デマンド管理と電験3種の知識（デマンド制御・負荷率計算）がリンクした。業務で実感することで公式の意味が深まる</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-date">04/04</div>
-            <span class="tl-type-badge">デイリー</span>
-          </div>
-          <div class="tl-connector">
-            <div class="tl-dot"></div>
-            <div class="tl-line"></div>
-          </div>
-          <div class="tl-content">デマンドピーク抑制は空調の立ち上がり時刻を15分ずらすだけで5%削減できるケースがある。負荷平準化の効果は大きい</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-date">04/03</div>
-            <span class="tl-type-badge">デイリー</span>
-          </div>
-          <div class="tl-connector">
-            <div class="tl-dot"></div>
-            <div class="tl-line"></div>
-          </div>
-          <div class="tl-content">PLCのバックアップは定修前・変更前の2タイミングが鉄則。変更後のバックアップだけでは障害時に戻せない</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-date">04/02</div>
-            <span class="tl-type-badge">デイリー</span>
-          </div>
-          <div class="tl-connector">
-            <div class="tl-dot"></div>
-            <div class="tl-line"></div>
-          </div>
-          <div class="tl-content">防爆機器（Ex認証）は5年ごとの分解点検が義務。コネクタ部の腐食検査は毎年実施が推奨</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-date">04/01</div>
-            <span class="tl-type-badge">デイリー</span>
-          </div>
-          <div class="tl-connector">
-            <div class="tl-dot"></div>
-            <div class="tl-line"></div>
-          </div>
-          <div class="tl-content">インバータのコモンモードノイズ対策はLCフィルタとシールド接地の組み合わせが最も効果的。単独では不十分なケースあり</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-left">
-            <div class="tl-date">03/31</div>
-            <span class="tl-type-badge">デイリー</span>
-          </div>
-          <div class="tl-connector">
-            <div class="tl-dot"></div>
-            <div class="tl-line"></div>
-          </div>
-          <div class="tl-content">過去の稟議資料をアーカイブしながら気づいた：投資根拠の書き方が年度ごとにバラバラ。テンプレート化の必要性を再確認</div>
-        </div>
+    <div class="card">
+      <div class="card-title">PDCA 振り返り</div>
+      <div class="filter-row" id="filter-row">
+        <button class="filter-btn active" data-f="all">すべて</button>
+        <button class="filter-btn" data-f="ng">NG</button>
+        <button class="filter-btn" data-f="risky">RISKY</button>
+        <button class="filter-btn" data-f="ok">OK</button>
       </div>
-    </section>
+      <div class="pdca-list" id="pdca-list"></div>
+    </div>`;
 
-  
-    <section class="section">
-      <h2 class="section-title"><span class="icon-wrap" data-lucide="trending-up"></span>タスク完了数トレンド（直近30日）</h2>
-      <div class="chart-wrap">
-        <canvas id="trendChart"></canvas>
-      </div>
-    </section>
-    <script>
-    (function() {
-      const ctx = document.getElementById('trendChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ["03/12", "03/13", "03/14", "03/15", "03/16", "03/17", "03/18", "03/19", "03/20", "03/21", "03/22", "03/23", "03/24", "03/25", "03/26", "03/27", "03/28", "03/29", "03/30", "03/31", "04/01", "04/02", "04/03", "04/04", "04/05", "04/06", "04/07", "04/08", "04/09", "04/10"],
-          datasets: [{
-            label: 'タスク完了数',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 6, 5, 7, 4, 0, 0, 5, 8, 6, 7],
-            borderColor: '#38bdf8',
-            backgroundColor: 'rgba(56, 189, 248, 0.08)',
-            borderWidth: 2,
-            pointBackgroundColor: '#38bdf8',
-            pointRadius: 3,
-            pointHoverRadius: 5,
-            fill: true,
-            tension: 0.4,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: '#1e293b',
-              titleColor: '#e2e8f0',
-              bodyColor: '#94a3b8',
-              borderColor: 'rgba(255,255,255,0.08)',
-              borderWidth: 1,
-            }
-          },
-          scales: {
-            x: {
-              ticks: { color: '#64748b', maxTicksLimit: 10 },
-              grid: { color: 'rgba(255,255,255,0.04)' },
-            },
-            y: {
-              beginAtZero: true,
-              ticks: { color: '#64748b', stepSize: 1 },
-              grid: { color: 'rgba(255,255,255,0.06)' },
-            }
-          }
-        }
-      });
-    })();
-    </script>
+  document.getElementById('updated-at').textContent = '最終学習: ' + lastDate;
 
-</main>
+  // Timeline chart
+  new Chart(document.getElementById('chart-timeline'), {
+    type: 'bar',
+    data: {
+      labels: dates,
+      datasets: [{ data: dates.map(d => timeMap[d]), backgroundColor: 'rgba(56,189,248,0.45)', borderColor: '#38bdf8', borderWidth: 1, borderRadius: 4 }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#64748b', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: { ticks: { color: '#64748b', font: { size: 11 }, stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.06)' }, beginAtZero: true }
+      }
+    }
+  });
 
-<script>
-  // Initialize Lucide icons
-  lucide.createIcons();
+  // Subject bars
+  const subjBars = document.getElementById('subj-bars');
+  ['理論','電力','機械','法規'].forEach(s => {
+    const cnt = subjMap[s] || 0;
+    const pct = Math.round(cnt / maxSubj * 100);
+    const col = SUBJ_COLOR[s];
+    subjBars.innerHTML += `
+      <div>
+        <div class="subject-header">
+          <span class="subject-name" style="color:${col}">${s}</span>
+          <span class="subject-count">${cnt} テーマ</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${col}"></div></div>
+      </div>`;
+  });
+
+  // PDCA list
+  function renderPDCA(filter) {
+    const items = filter === 'all' ? hasPDCA : hasPDCA.filter(r => r.result === filter);
+    const list = document.getElementById('pdca-list');
+    if (!items.length) { list.innerHTML = `<div style="color:var(--muted);padding:12px 0;font-size:0.85rem">該当なし</div>`; return; }
+    list.innerHTML = items.map(r => `
+      <div class="pdca-item">
+        <div class="pdca-meta">
+          <span class="badge badge-${r.result}">${resultLabel(r.result)}</span>
+          <span class="badge badge-subj">${r.subject || '–'}</span>
+          <span class="pdca-theme">${r.theme}</span>
+          <span class="pdca-date">${r.date}  #${r.attempt}</span>
+        </div>
+        ${r.memo  ? `<div class="pdca-section"><div class="pdca-label problem">Problem</div><div class="pdca-text">${r.memo}</div></div>` : ''}
+        ${r.patch ? `<div class="pdca-section"><div class="pdca-label patch">Patch / Try</div><div class="pdca-text">${r.patch}</div></div>` : ''}
+      </div>`).join('');
+  }
+
+  renderPDCA('all');
+  document.getElementById('filter-row').addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderPDCA(btn.dataset.f);
+  });
+}
+
+load().then(render).catch(err => {
+  document.getElementById('app').innerHTML = `<div class="loading" style="color:var(--red)">データ取得失敗: ${err.message}</div>`;
+});
 </script>
-
 </body>
 </html>
