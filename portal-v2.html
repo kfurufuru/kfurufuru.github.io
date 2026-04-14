@@ -9,6 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="Secretary">
   <meta name="theme-color" content="#0a0e1a">
   <title>Secretary Portal v2</title>
+  <script>/* early GitHub Pages detection */if(location.hostname.includes('github.io'))document.documentElement.classList.add('is-github-pages');</script>
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap"></noscript>
   <style>
@@ -120,6 +121,9 @@
       box-shadow: 0 4px 16px rgba(0,0,0,0.5);
     }
     .data-badge.offline:hover::after { display: block; }
+    .data-badge.public{
+      background:rgba(99,102,241,0.12);border-color:rgba(99,102,241,0.35);color:#a5b4fc;
+    }
     .header-right { position: relative; }
     .status-dot{
       width:8px;height:8px;border-radius:50%;
@@ -887,6 +891,14 @@
   }
   .server-banner.github .server-banner-btn { display: none; }
 
+  /* GitHub Pages 初期フラッシュ防止 */
+  .is-github-pages .server-banner.off .server-banner-btn { display: none; }
+  .is-github-pages .server-banner.off #server-msg::before {
+    content: '📡 GitHub Pages表示中 — Wiki・公開コンテンツのみ利用可能';
+  }
+  .is-github-pages .server-banner.off #server-msg { font-size: 0; }
+  .is-github-pages .server-banner.off #server-msg::before { font-size: 0.82rem; }
+
   /* ---- Local group dimmed on GitHub Pages ---- */
   .github-pages-mode .site-group--local {
     opacity: 0.45;
@@ -971,7 +983,7 @@
         <div class="study-slot slot-pending" title="夜">🌙</div>
       </div>
       <span class="study-progress-text offline-txt" id="study-progress-text">未着手</span>
-      <a class="study-link" href="#" data-local-url="http://localhost:8765/denken-study.html" onclick="openLocalLink(event,this)">学習を開始</a>
+      <a class="study-link" href="https://kfurufuru.github.io/denken3-study/index.html" target="_blank">学習を開始</a>
     </div>
   </div>
 
@@ -1020,12 +1032,15 @@
         <a class="site-link site-link--dashboard" href="https://kfurufuru.github.io/denken3-study/">
           <span class="site-link-icon">📊</span>学習
         </a>
-        <a class="site-link site-link--dashboard" href="denken-map.html">
+        <a class="site-link site-link--dashboard" href="https://kfurufuru.github.io/denken3-study/denken-map.html" target="_blank">
           <span class="site-link-icon">🧠</span>知識マップ
         </a>
         <a class="site-link site-link--dashboard" href="#" data-local-url="http://localhost:8096/dashboard.html" onclick="openLocalLink(event,this)">
           <span class="site-link-icon">⚡</span>AI News
           <span class="site-link-sub">🖥️ PC専用</span>
+        </a>
+        <a class="site-link site-link--dashboard" href="denken-news/index.html">
+          <span class="site-link-icon">📰</span>電験ニュース
         </a>
         <a class="site-link site-link--dashboard" href="health-monitor/health-dashboard.html">
           <span class="site-link-icon">🏥</span>ヘルス
@@ -1057,19 +1072,22 @@
         <a class="site-link site-link--wiki" href="https://kfurufuru.github.io/ei-wiki/" target="_blank">
           <span class="site-link-icon">🔌</span>電気計装
         </a>
+        <a class="site-link site-link--wiki" href="it-wiki.html" target="_blank">
+          <span class="site-link-icon">💻</span>IT用語<span class="site-link-sub">30語</span>
+        </a>
       </div>
 
       <div class="site-group">
         <div class="site-group-title" style="border-bottom-color:rgba(99,102,241,0.3);color:#a5b4fc;">⚡ アプリ</div>
-        <a class="site-link site-link--app" href="https://kfurufuru.github.io/denken3-study/quiz.html">
-          <span class="site-link-icon">📝</span>テスト記録
-        </a>
         <a class="site-link site-link--app" href="https://kfurufuru.github.io/genai-db/">
           <span class="site-link-icon">🤖</span>生成AI データベース
         </a>
         <a class="site-link site-link--app" href="research/genai-daily-workflow.html">
           <span class="site-link-icon">🗂️</span>AI業務適用マップ
           <span class="site-link-sub">ローカル</span>
+        </a>
+        <a class="site-link site-link--app" href="f-company-map.html">
+          <span class="site-link-icon">🏢</span>Fカンパニー組織図
         </a>
         <a class="site-link site-link--app" href="#" onclick="event.preventDefault();if(location.hostname==='localhost'||location.hostname==='127.0.0.1'){location.href='people/portal.html'}else{alert('🔒 ローカル専用ページです\nローカルサーバーからアクセスしてください')}">
           <span class="site-link-icon">🧑‍💼</span>キャリアポートフォリオ
@@ -1250,8 +1268,8 @@
       <a class="link-btn" href="session-progress.html">
         <span class="link-icon">📊</span>セッション進捗
       </a>
-      <a class="link-btn" href="#" data-local-url="http://localhost:8765/denken-study.html" onclick="openLocalLink(event,this)">
-        <span class="link-icon">⚡</span>電験学習<span class="link-pin-badge">PC専用</span>
+      <a class="link-btn" href="https://kfurufuru.github.io/denken3-study/index.html" target="_blank">
+        <span class="link-icon">⚡</span>電験学習
       </a>
       <a class="link-btn" href="https://kfurufuru.github.io/genai-db/">
         <span class="link-icon">🧠</span>AI知識DB
@@ -1333,13 +1351,20 @@ async function loadData() {
     DATA = { ...FALLBACK };
     const badge = document.getElementById('data-badge');
     if (badge) {
-      badge.className = 'data-badge offline';
       const isWrongPort = location.port && location.port !== '8092';
-      badge.textContent = isWrongPort ? '🔴 ポート違い' : (isGitHubPages ? '🔵 公開モード' : '🔴 データ未接続');
-      const reason = isWrongPort
-        ? `このページは localhost:8092 で開いてください（現在: ${location.port}）`
-        : (isGitHubPages ? 'GitHub Pages表示中 — portal-data.json はローカル専用です' : `portal-data.json 読み込み失敗 — ${err.message || 'fetch error'}`);
-      badge.setAttribute('data-reason', reason);
+      if (isWrongPort) {
+        badge.className = 'data-badge offline';
+        badge.textContent = '🔴 ポート違い';
+        badge.setAttribute('data-reason', `このページは localhost:8092 で開いてください（現在: ${location.port}）`);
+      } else if (isGitHubPages) {
+        badge.className = 'data-badge public';
+        badge.textContent = '🔵 公開モード';
+        badge.setAttribute('data-reason', 'GitHub Pages表示中 — 静的コンテンツのみ利用可能');
+      } else {
+        badge.className = 'data-badge offline';
+        badge.textContent = '🔴 データ未接続';
+        badge.setAttribute('data-reason', `portal-data.json 読み込み失敗 — ${err.message || 'fetch error'}`);
+      }
       badge.title = '';
     }
     const lastUpd = document.getElementById('last-updated');
