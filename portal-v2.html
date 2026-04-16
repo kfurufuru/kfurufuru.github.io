@@ -1045,8 +1045,12 @@
         <a class="site-link site-link--dashboard" href="health-monitor/health-dashboard.html">
           <span class="site-link-icon">🏥</span>ヘルス
         </a>
-        <a class="site-link site-link--dashboard" href="https://kfurufuru.github.io/denken3-study/stats.html">
-          <span class="site-link-icon">📈</span>学習PDCA統計
+        <a class="site-link site-link--dashboard" href="session-progress.html">
+          <span class="site-link-icon">📈</span>セッション進捗
+        </a>
+        <a class="site-link site-link--dashboard" href="reflection/dashboard.html">
+          <span class="site-link-icon">🪞</span>振り返り
+          <span class="site-link-sub">📁 ローカル専用</span>
         </a>
         <a class="site-link site-link--dashboard" href="#" onclick="event.preventDefault();if(location.hostname==='localhost'||location.hostname==='127.0.0.1'){location.href='digital-twin/marriage-dashboard.html'}">
           <span class="site-link-icon">💍</span>結婚戦略
@@ -1094,15 +1098,39 @@
         </a>
       </div>
 
+      <div class="site-group">
+        <div class="site-group-title" style="border-bottom-color:rgba(168,85,247,0.3);color:#d8b4fe;">📝 原本・Vault</div>
+        <a class="site-link site-link--app" href="obsidian://open?vault=.secretary">
+          <span class="site-link-icon">🔮</span>Obsidian Vault
+          <span class="site-link-sub">knowledge/</span>
+        </a>
+        <a class="site-link site-link--app" href="dashboard.html">
+          <span class="site-link-icon">📊</span>知識ダッシュボード
+          <span class="site-link-sub">静的HTML</span>
+        </a>
+        <a class="site-link site-link--app" href="obsidian://open?vault=.secretary&file=dashboard">
+          <span class="site-link-icon">🔮</span>Obsidian DB
+          <span class="site-link-sub">Dataview</span>
+        </a>
+        <a class="site-link site-link--app" href="obsidian://open?vault=.secretary&file=inbox%2F">
+          <span class="site-link-icon">📥</span>受信箱
+          <span class="site-link-sub">inbox/</span>
+        </a>
+        <a class="site-link site-link--app" href="obsidian://open?vault=.secretary&file=todos%2F">
+          <span class="site-link-icon">✅</span>TODO一覧
+          <span class="site-link-sub">todos/</span>
+        </a>
+      </div>
+
       <div class="site-group site-group--local">
         <div class="site-group-title" style="border-bottom-color:rgba(245,158,11,0.3);color:#fcd34d;">📁 ローカルファイル</div>
-        <a class="site-link site-link--local" href="#" onclick="event.preventDefault()">
+        <a class="site-link site-link--local" href="obsidian://open?vault=.secretary&file=digital-twin%2Fdecision-log">
           <span class="site-link-icon">📋</span>決定ログ
         </a>
-        <a class="site-link site-link--local" href="#" onclick="event.preventDefault()">
+        <a class="site-link site-link--local" href="obsidian://open?vault=.secretary&file=digital-twin%2Fpriorities-framework">
           <span class="site-link-icon">🎯</span>判断軸
         </a>
-        <a class="site-link site-link--local" href="#" onclick="event.preventDefault()">
+        <a class="site-link site-link--local" href="obsidian://open?vault=.secretary&file=digital-twin%2Fcommunication-style">
           <span class="site-link-icon">✍️</span>文体スタイル
         </a>
       </div>
@@ -1260,6 +1288,9 @@
       <a class="link-btn" href="#" data-local-url="http://localhost:8096/dashboard.html" onclick="openLocalLink(event,this)">⚡ AI News<span class="link-pin-badge">PC専用</span></a>
       <a class="link-btn" href="health-monitor/health-dashboard.html">
         <span class="link-icon">🏥</span>ヘルスチェック
+      </a>
+      <a class="link-btn" href="session-progress.html">
+        <span class="link-icon">📊</span>セッション進捗
       </a>
       <a class="link-btn" href="https://kfurufuru.github.io/denken3-study/index.html" target="_blank">
         <span class="link-icon">⚡</span>電験学習

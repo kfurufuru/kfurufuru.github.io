@@ -1,18 +1,1 @@
-{
-  "name": "Secretary Portal v2",
-  "short_name": "Secretary",
-  "description": "Fカンパニー パーソナル管理ポータル",
-  "start_url": "/portal-v2.html",
-  "display": "standalone",
-  "background_color": "#0a0e1a",
-  "theme_color": "#0a0e1a",
-  "orientation": "portrait",
-  "icons": [
-    {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
-}
+{"name":"Secretary","short_name":"Secretary","start_url":"/portal-v2.html","display":"standalone","background_color":"#0f172a","theme_color":"#0f172a"}
