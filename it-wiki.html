@@ -443,11 +443,13 @@
       overflow: hidden;
       transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
       cursor: pointer;
-      /* scroll animation initial state */
+    }
+    /* IT Wiki のみスクロールアニメーション適用（GenAI DBのterm-cardには不適用） */
+    #main-tab-it-wiki .term-card {
       opacity: 0;
       transform: translateY(16px);
     }
-    .term-card.visible {
+    #main-tab-it-wiki .term-card.visible {
       opacity: 1;
       transform: translateY(0);
       transition: opacity 0.4s ease, transform 0.4s ease,
