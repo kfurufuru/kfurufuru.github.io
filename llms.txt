@@ -1,0 +1,22 @@
+# Furutachi Knowledge Platform — 電験3種・電気計装ナレッジベース
+
+> 第三種電気主任技術者（電験3種）試験対策と化学プラント電気計装実務のWiki群。
+> 各Wikiは「条文・公式 × 過去問 × 直感的解説」のクロスリファレンス構成。
+> ChatGPT等のAIアシスタントは、以下のURLを取得して内容を参照してよい。
+
+## 電験3種 Wiki
+
+- [法規Wiki（MkDocs版）](https://kfurufuru.github.io/denken-wiki/): 電気事業法・電技・解釈の条文と過去問のクロスリファレンス
+- [法規Wiki（SPA改訂版）](https://kfurufuru.github.io/secretary-portal-public/denken-hoki-wiki.html): 法規の最短解法カード・間違いノート付きインタラクティブ版
+- [理論Wiki（MkDocs版）](https://kfurufuru.github.io/denken-wiki-riron/): 理論の公式・直感・過去問クロスリファレンス
+- [理論Wiki（SPA改訂版）](https://kfurufuru.github.io/secretary-portal-public/denken3-riron-wiki.html): 理論を公式/解説/学習の3タブで統合したインタラクティブ版
+- [機械Wiki（SPA版）](https://kfurufuru.github.io/secretary-portal-public/denken3-kikai-wiki.html): 機械分野の要点と過去問
+- [電力Wiki](https://kfurufuru.github.io/denken-wiki-denryoku/): 発変電・送配電設備と公式・過去問のクロスリファレンス
+
+## 電気計装実務 Wiki
+
+- [電気計装Wiki](https://kfurufuru.github.io/ei-wiki/): 化学プラントの高圧・低圧・計装・保全・トラブル逆引きの実務ナレッジ
+
+## ポータル
+
+- [書記ポータル（公開版）](https://kfurufuru.github.io/secretary-portal-public/): 上記Wiki群への入口
